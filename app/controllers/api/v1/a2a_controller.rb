@@ -67,8 +67,9 @@ class Api::V1::A2aController < Api::V1::BaseController
       if params["taskId"].present?
         chat = find_task(params["taskId"])
         return unless chat
-        chat.resume_from_cancel!
         UserMessage.create!(chat: chat, content: text, ai_model: Provider::Openai::MODELS.first)
+        # Resume a canceled chat only after the message persists.
+        chat.resume_from_cancel!
         chat
       else
         Current.user.chats.start!(text, model: Provider::Openai::MODELS.first)
