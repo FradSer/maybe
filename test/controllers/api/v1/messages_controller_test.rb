@@ -78,6 +78,34 @@ class Api::V1::MessagesControllerTest < ActionDispatch::IntegrationTest
     assert response_body["message_id"].present?
   end
 
+  test "create resumes a chat canceled via A2A" do
+    @chat.update!(a2a_state: "canceled")
+
+    post "/api/v1/chats/#{@chat.id}/messages",
+      params: { content: "New intent" },
+      headers: bearer_auth_header(@write_token)
+
+    assert_response :created
+    assert_nil @chat.reload.a2a_state
+  end
+
+  test "retry resumes a chat canceled via A2A" do
+    @chat.update!(a2a_state: "canceled")
+    @chat.messages.create!(
+      type: "AssistantMessage",
+      content: "Previous response",
+      ai_model: "gpt-4"
+    )
+
+    # The retry action clears the A2A cancel marker before attempting the
+    # response. (The underlying empty-content create is a pre-existing bug
+    # tracked separately; we only assert the resume side effect here.)
+    post "/api/v1/chats/#{@chat.id}/messages/retry",
+      headers: bearer_auth_header(@write_token)
+
+    assert_nil @chat.reload.a2a_state
+  end
+
   test "should not retry if no assistant message exists" do
     # Remove all assistant messages
     @chat.messages.where(type: "AssistantMessage").destroy_all
