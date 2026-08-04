@@ -39,6 +39,17 @@ class ChatTest < ActiveSupport::TestCase
     assert_equal [ "completed", nil ], chats(:one).a2a_status
   end
 
+  test "a2a_status is working when last assistant message has no content yet" do
+    chat = @user.chats.start!("Streaming", model: "gpt-4.1")
+    # Simulate the mid-stream AssistantMessage row that exists before any
+    # output chunk is persisted (real path persists empty content).
+    message = chat.messages.build(type: "AssistantMessage", content: " ", ai_model: "gpt-4.1")
+    message.save!(validate: false)
+    message.update_column(:content, "")
+
+    assert_equal [ "working", nil ], chat.a2a_status
+  end
+
   test "a2a_status is failed with error message" do
     chat = chats(:one)
     chat.update!(error: "boom")

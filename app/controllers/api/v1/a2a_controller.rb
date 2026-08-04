@@ -15,8 +15,10 @@ class Api::V1::A2aController < Api::V1::BaseController
       return render_a2a_error(-32600, "Invalid Request: 'jsonrpc' must be '2.0' and 'method' is required", :bad_request)
     end
 
+    # JSON-RPC 2.0: only an *absent* id marks a notification (a null id is a
+    # valid request id and must be echoed).
     @a2a_request_id = payload["id"]
-    @a2a_notification = @a2a_request_id.nil?
+    @a2a_notification = !payload.key?("id")
 
     case payload["method"]
     when "message/send" then handle_message_send(payload["params"])
@@ -97,6 +99,11 @@ class Api::V1::A2aController < Api::V1::BaseController
     end
 
     def find_task(task_id)
+      unless task_id.is_a?(String) && task_id.match?(/\A\h{8}-\h{4}-\h{4}-\h{4}-\h{12}\z/)
+        render_a2a_error(-32001, "TaskNotFoundError: task #{task_id} not found")
+        return nil
+      end
+
       chat = Current.user.chats.find_by(id: task_id)
       render_a2a_error(-32001, "TaskNotFoundError: task #{task_id} not found") unless chat
       chat
@@ -124,6 +131,11 @@ class Api::V1::A2aController < Api::V1::BaseController
     end
 
     def render_a2a_error(code, message, http_status = :ok, id: :request_id)
+      # JSON-RPC 2.0: MUST NOT reply to a notification. Errors raised before
+      # the request id is known (parse / invalid request) still reply with
+      # id: null, as the spec permits.
+      return if @a2a_notification
+
       resolved_id = id == :request_id ? @a2a_request_id : id
       render json: { jsonrpc: "2.0", id: resolved_id, error: { code: code, message: message } }, status: http_status
     end

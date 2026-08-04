@@ -199,6 +199,34 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     assert_equal(-32001, error["code"])
   end
 
+  test "returns TaskNotFoundError for malformed task id" do
+    [ "garbage", "123", [ "x" ], { "id" => "x" } ].each do |bad_id|
+      rpc = JSON.generate({
+        jsonrpc: "2.0", id: 1, method: "tasks/get",
+        params: { "taskId" => bad_id }
+      })
+      post a2a_path, params: rpc, headers: json_headers.merge(@api_key_header)
+
+      assert_response :success, "taskId=#{bad_id.inspect}"
+      assert_equal(-32001, JSON.parse(response.body).dig("error", "code"), "taskId=#{bad_id.inspect}")
+    end
+  end
+
+  test "notification gets no error response body" do
+    rpc = JSON.generate({ jsonrpc: "2.0", method: "tasks/get", params: {} })
+    post a2a_path, params: rpc, headers: json_headers.merge(@api_key_header)
+
+    assert_response :no_content
+    assert_empty response.body
+  end
+
+  test "null id is treated as a request, not a notification" do
+    post a2a_path, params: JSON.generate({ jsonrpc: "2.0", id: nil, method: "tasks/get", params: {} }), headers: json_headers.merge(@api_key_header)
+
+    assert_response :success
+    assert_nil JSON.parse(response.body)["id"]
+  end
+
   test "returns TaskNotFoundError for another user's task" do
     other_chat = chats(:two) # belongs to family_member
 
