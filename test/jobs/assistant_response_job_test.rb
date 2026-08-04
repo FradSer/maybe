@@ -3,10 +3,19 @@
 require "test_helper"
 
 class AssistantResponseJobTest < ActiveJob::TestCase
-  test "skips chats canceled via A2A" do
+  test "skips a message canceled via A2A" do
     chat = users(:family_admin).chats.start!("Hello", model: "gpt-4.1")
-    chat.update!(a2a_state: "canceled")
     message = chat.messages.last
+    chat.update!(a2a_state: message.id.to_s)
+
+    message.expects(:request_response).never
+    AssistantResponseJob.perform_now(message)
+  end
+
+  test "skips the legacy chat-level canceled marker" do
+    chat = users(:family_admin).chats.start!("Hello", model: "gpt-4.1")
+    message = chat.messages.last
+    chat.update!(a2a_state: "canceled")
 
     message.expects(:request_response).never
     AssistantResponseJob.perform_now(message)
@@ -20,14 +29,14 @@ class AssistantResponseJobTest < ActiveJob::TestCase
     AssistantResponseJob.perform_now(message)
   end
 
-  test "skips a superseded message after the chat is resumed" do
+  test "runs a newer message after a different turn was canceled" do
     chat = users(:family_admin).chats.start!("First turn", model: "gpt-4.1")
     canceled_message = chat.messages.last
-    # A newer turn arrives (chat no longer canceled), making the old job stale.
-    chat.messages.create!(type: "UserMessage", content: "Newer turn", ai_model: "gpt-4.1")
+    chat.update!(a2a_state: canceled_message.id.to_s)
+    newer_message = chat.messages.create!(type: "UserMessage", content: "Newer turn", ai_model: "gpt-4.1")
 
-    canceled_message.expects(:request_response).never
-    AssistantResponseJob.perform_now(canceled_message)
+    newer_message.stubs(:request_response)
+    AssistantResponseJob.perform_now(newer_message)
   end
 
   test "runs a retried user message even when an assistant message is the last row" do

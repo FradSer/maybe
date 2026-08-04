@@ -121,6 +121,10 @@ class Api::V1::A2aController < Api::V1::BaseController
     end
 
     def a2a_artifacts(chat)
+      # A canceled task delivers no artifacts, even if a raced generation
+      # finished after the cancel.
+      return [] if chat.a2a_state.present?
+
       last_assistant = chat.conversation_messages.ordered.last
       return [] unless last_assistant&.role == "assistant" && last_assistant.status == "complete"
 

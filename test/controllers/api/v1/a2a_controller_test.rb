@@ -134,6 +134,15 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     assert_equal "canceled", task.dig("status", "state")
   end
 
+  test "canceled task delivers no artifacts" do
+    chat = chats(:one) # ends with a complete assistant response
+    chat.update!(a2a_state: "canceled")
+
+    post a2a_path, params: tasks_get_rpc(chat.id), headers: json_headers.merge(@api_key_header)
+
+    assert_empty JSON.parse(response.body).dig("result", "artifacts")
+  end
+
   test "tasks/get works with read scope" do
     post a2a_path, params: tasks_get_rpc(chats(:one).id), headers: json_headers.merge(bearer_auth_header(@read_token))
 
@@ -142,12 +151,13 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
 
   test "tasks/cancel marks a pending task canceled" do
     chat = @user.chats.start!("To cancel", model: "gpt-4.1")
+    last_user = chat.conversation_messages.ordered.where(type: "UserMessage").last
 
     post a2a_path, params: tasks_cancel_rpc(chat.id), headers: json_headers.merge(@api_key_header)
 
     assert_response :success
     assert_equal "canceled", JSON.parse(response.body).dig("result", "status", "state")
-    assert_equal "canceled", chat.reload.a2a_state
+    assert_equal last_user.id.to_s, chat.reload.a2a_state
   end
 
   test "tasks/cancel is a no-op on completed tasks" do
@@ -163,12 +173,13 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
   test "tasks/cancel cancels an in-flight pending task" do
     chat = @user.chats.start!("Streaming", model: "gpt-4.1")
     chat.messages.create!(type: "AssistantMessage", content: "partial", ai_model: "gpt-4.1", status: "pending")
+    last_user = chat.conversation_messages.ordered.where(type: "UserMessage").last
 
     post a2a_path, params: tasks_cancel_rpc(chat.id), headers: json_headers.merge(@api_key_header)
 
     assert_response :success
     assert_equal "canceled", JSON.parse(response.body).dig("result", "status", "state")
-    assert_equal "canceled", chat.reload.a2a_state
+    assert_equal last_user.id.to_s, chat.reload.a2a_state
   end
 
   test "tasks/cancel requires write scope" do
