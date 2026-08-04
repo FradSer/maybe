@@ -40,6 +40,8 @@ class Entry < ApplicationRecord
   end
 
   def trade_currency_matches_entry
+    return unless entryable
+
     if entryable.currency != currency
       errors.add(:base, :currency_mismatch)
     end
