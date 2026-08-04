@@ -143,33 +143,43 @@
   }
 }
 
-/* Custom scrollbar implementation for Windows browsers */
-.windows {
-  ::-webkit-scrollbar {
-    width: 4px;
-  }
+/* Global scrollbar styling (all scrollable containers) */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-300) transparent;
 
+  @variant theme-dark {
+    scrollbar-color: var(--color-gray-700) transparent;
+  }
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray-300);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-gray-400);
+}
+
+@variant theme-dark {
   ::-webkit-scrollbar-thumb {
-    background: #d6d6d6;
-    border-radius: 10px;
+    background-color: var(--color-gray-700);
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #a6a6a6;
-  }  
-}
-
-.scrollbar {
-  &::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: #d6d6d6;
-    border-radius: 10px;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: #a6a6a6;
+    background-color: var(--color-gray-600);
   }
 }
