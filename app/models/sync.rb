@@ -152,6 +152,7 @@ class Sync < ApplicationRecord
 
     def handle_completion_transition
       family.touch(:latest_sync_completed_at)
+      syncable.update!(data_synced_through: Date.current) if syncable.respond_to?(:data_synced_through)
     end
 
     def window_valid
