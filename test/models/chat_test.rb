@@ -93,4 +93,14 @@ class ChatTest < ActiveSupport::TestCase
     chat.resume_from_cancel!
     assert_nil chat.a2a_state
   end
+
+  test "ask_assistant_later resumes a canceled chat" do
+    chat = @user.chats.start!("Canceled", model: "gpt-4.1")
+    chat.update!(a2a_state: "canceled")
+    message = chat.messages.last
+
+    chat.ask_assistant_later(message)
+
+    assert_nil chat.reload.a2a_state
+  end
 end
