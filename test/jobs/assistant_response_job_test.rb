@@ -29,4 +29,14 @@ class AssistantResponseJobTest < ActiveJob::TestCase
     canceled_message.expects(:request_response).never
     AssistantResponseJob.perform_now(canceled_message)
   end
+
+  test "runs a retried user message even when an assistant message is the last row" do
+    chat = users(:family_admin).chats.start!("Retry me", model: "gpt-4.1")
+    user_message = chat.messages.last
+    # The chat ends with an AssistantMessage (normal state after a response).
+    chat.messages.create!(type: "AssistantMessage", content: "Previous answer", ai_model: "gpt-4.1", status: "complete")
+
+    user_message.stubs(:request_response)
+    AssistantResponseJob.perform_now(user_message)
+  end
 end
