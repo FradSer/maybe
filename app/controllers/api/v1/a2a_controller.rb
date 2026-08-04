@@ -43,8 +43,10 @@ class Api::V1::A2aController < Api::V1::BaseController
     def handle_message_send(params)
       return unless authorize_scope!(:write)
       return if performed?
-      require_ai_enabled
-      return if performed?
+      unless current_resource_owner&.ai_enabled?
+        render_a2a_error(-32000, "AI features are not enabled for this user - feature_disabled", :forbidden) unless @a2a_notification
+        return
+      end
 
       unless params.is_a?(Hash) && params["message"].is_a?(Hash)
         return render_a2a_error(-32602, "Invalid params: 'message' object is required")

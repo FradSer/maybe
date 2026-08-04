@@ -318,6 +318,21 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     assert_response :no_content
   end
 
+  test "notification message/send respects ai_enabled gate" do
+    @user.update!(ai_enabled: false)
+
+    assert_no_difference [ "Chat.count", "Message.count" ] do
+      assert_enqueued_jobs 0, only: AssistantResponseJob do
+        post a2a_path, params: JSON.generate({
+          jsonrpc: "2.0", method: "message/send",
+          params: { "message" => { "role" => "user", "parts" => [ { "type" => "text", "text" => "Should not run" } ] } }
+        }), headers: json_headers.merge(@api_key_header)
+      end
+    end
+
+    assert_response :no_content
+  end
+
   private
 
     def a2a_path
