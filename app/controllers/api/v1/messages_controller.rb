@@ -24,22 +24,18 @@ class Api::V1::MessagesController < Api::V1::BaseController
   end
 
   def retry
-    last_message = @chat.messages.ordered.last
+    # Retry by re-enqueuing the last user message, matching the web
+    # Chat#retry_last_message! pattern (AssistantResponseJob expects a
+    # UserMessage). Creates no new message row.
+    last_user = @chat.conversation_messages.ordered.where(type: "UserMessage").last
 
-    if last_message&.type == "AssistantMessage"
-      new_message = @chat.messages.create!(
-        type: "AssistantMessage",
-        content: "",
-        ai_model: last_message.ai_model
-      )
-
-      # Retrying is new user intent; resume a canceled chat only after the
-      # message persists, so a failed create keeps the cancel marker.
+    if last_user.present?
+      # Retrying is new user intent; resume a canceled chat before enqueuing.
       @chat.resume_from_cancel!
-      AssistantResponseJob.perform_later(new_message)
-      render json: { message: "Retry initiated", message_id: new_message.id }, status: :accepted
+      AssistantResponseJob.perform_later(last_user)
+      render json: { message: "Retry initiated", message_id: last_user.id }, status: :accepted
     else
-      render json: { error: "No assistant message to retry" }, status: :unprocessable_entity
+      render json: { error: "No user message to retry" }, status: :unprocessable_entity
     end
   end
 
