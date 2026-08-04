@@ -13,6 +13,7 @@ class Entry < ApplicationRecord
   validates :date, :name, :amount, :currency, presence: true
   validates :date, uniqueness: { scope: [ :account_id, :entryable_type ] }, if: -> { valuation? }
   validates :date, comparison: { greater_than: -> { min_supported_date } }
+  validate :trade_currency_matches_entry, if: -> { trade? }
 
   scope :visible, -> {
     joins(:account).where(accounts: { status: [ "draft", "active" ] })
@@ -36,6 +37,12 @@ class Entry < ApplicationRecord
 
   def classification
     amount.negative? ? "income" : "expense"
+  end
+
+  def trade_currency_matches_entry
+    if entryable.currency != currency
+      errors.add(:base, :currency_mismatch)
+    end
   end
 
   def lock_saved_attributes!
