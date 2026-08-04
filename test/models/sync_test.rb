@@ -28,6 +28,17 @@ class SyncTest < ActiveSupport::TestCase
     assert_equal "completed", sync.status
   end
 
+  test "completed sync updates data_synced_through on syncable" do
+    syncable = accounts(:depository)
+    sync = Sync.create!(syncable: syncable)
+
+    syncable.expects(:perform_sync).with(sync).once
+
+    sync.perform
+
+    assert_equal Date.current, syncable.reload.data_synced_through
+  end
+
   test "handles sync errors" do
     syncable = accounts(:depository)
     sync = Sync.create!(syncable: syncable)
