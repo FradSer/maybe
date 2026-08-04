@@ -1,0 +1,9 @@
+scopes:
+    - name: app
+      description: application logic including controllers, models, components, helpers, and assets; does not cover data migrations or tests
+    - name: config
+      description: system configuration files, initializers, and environment settings; does not cover app logic
+    - name: db
+      description: database schema, migrations, and seeds; does not cover data migration scripts in app/
+    - name: lib
+      description: utility libraries, custom rake tasks, and shared code outside app/ or config/
