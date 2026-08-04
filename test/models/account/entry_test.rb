@@ -84,4 +84,16 @@ class EntryTest < ActiveSupport::TestCase
     # Should not include entry from disabled account
     assert_not_includes visible_entries, invisible_transaction
   end
+
+  test "trade must have same currency as entry" do
+    account = accounts(:investment)
+    assert_raises ActiveRecord::RecordInvalid do
+      account.entries.create! \
+        date: Date.current,
+        amount: 100,
+        currency: "USD",
+        name: "Test",
+        entryable: Trade.new(qty: 10, price: 10, currency: "EUR", security: securities(:aapl))
+    end
+  end
 end

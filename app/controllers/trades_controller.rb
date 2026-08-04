@@ -53,7 +53,7 @@ class TradesController < ApplicationController
   private
     def entry_params
       params.require(:entry).permit(
-        :name, :date, :amount, :currency, :excluded, :notes, :nature,
+        :name, :date, :amount, :excluded, :notes, :nature,
         entryable_attributes: [ :id, :qty, :price ]
       )
     end
