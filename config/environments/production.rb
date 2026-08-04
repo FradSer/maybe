@@ -75,7 +75,12 @@ Rails.application.configure do
 
   config.action_mailer.perform_caching = false
   config.action_mailer.deliver_later_queue_name = :high_priority
-  config.action_mailer.default_url_options = { host: ENV["APP_DOMAIN"] }
+  app_domain = ENV["APP_DOMAIN"]
+  if app_domain.present?
+    uri = URI.parse(app_domain =~ %r{\Ahttps?://} ? app_domain : "http://#{app_domain}")
+    config.action_mailer.default_url_options = { host: uri.host, port: uri.port, protocol: uri.scheme }
+    config.action_controller.default_url_options = { host: uri.host, port: uri.port, protocol: uri.scheme }
+  end
   config.action_mailer.delivery_method = :smtp
   config.action_mailer.smtp_settings = {
     address:   ENV["SMTP_ADDRESS"],
