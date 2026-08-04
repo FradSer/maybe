@@ -76,10 +76,11 @@ class Chat < ApplicationRecord
     end
   end
 
-  # A2A protocol task state (v1). Only "canceled" is persisted; all other
-  # states are derived from live pipeline state.
+  # A2A protocol task state (v1). "canceled" is persisted as the id of the
+  # canceled user message (so the guard can skip precisely that turn); all
+  # other states are derived from live pipeline state.
   def a2a_status
-    return [ "canceled", nil ] if a2a_state == "canceled"
+    return [ "canceled", nil ] if a2a_state.present?
 
     if error.present?
       # Chat#add_error persists e.to_json — a JSON string (with backtrace).
@@ -104,10 +105,13 @@ class Chat < ApplicationRecord
   def cancel!
     return false if [ "completed", "failed", "canceled" ].include?(a2a_status.first)
 
-    update!(a2a_state: "canceled")
+    # Persist the id of the turn being canceled so the job guard can skip
+    # exactly that message, even if a newer message resumes the chat later.
+    last_user = conversation_messages.ordered.where(type: "UserMessage").last
+    update!(a2a_state: last_user&.id || "canceled")
   end
 
   def resume_from_cancel!
-    update!(a2a_state: nil) if a2a_state == "canceled"
+    update!(a2a_state: nil) if a2a_state.present?
   end
 end

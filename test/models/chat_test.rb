@@ -76,9 +76,10 @@ class ChatTest < ActiveSupport::TestCase
 
   test "cancel! marks a pending task canceled" do
     chat = @user.chats.start!("Pending", model: "gpt-4.1")
+    last_user = chat.conversation_messages.ordered.where(type: "UserMessage").last
 
     assert chat.cancel!
-    assert_equal "canceled", chat.a2a_state
+    assert_equal last_user.id.to_s, chat.a2a_state
   end
 
   test "cancel! is a no-op on terminal tasks" do
@@ -94,10 +95,11 @@ class ChatTest < ActiveSupport::TestCase
 
   test "cancel! is idempotent" do
     chat = @user.chats.start!("Pending", model: "gpt-4.1")
-    chat.update!(a2a_state: "canceled")
+    last_user = chat.conversation_messages.ordered.where(type: "UserMessage").last
+    chat.update!(a2a_state: last_user.id.to_s)
 
     assert_not chat.cancel!
-    assert_equal "canceled", chat.a2a_state
+    assert_equal last_user.id.to_s, chat.a2a_state
   end
 
   test "resume_from_cancel! clears the marker" do
