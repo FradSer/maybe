@@ -30,10 +30,11 @@ class Api::V1::MessagesController < Api::V1::BaseController
     last_user = @chat.conversation_messages.ordered.where(type: "UserMessage").last
 
     if last_user.present?
-      # Retrying is new user intent: clear any prior error and resume a
-      # canceled chat before enqueuing (matching Chat#retry_last_message!).
+      # Retrying is new user intent: clear any prior error and — when the
+      # canceled turn is the one being retried — clear the marker so the
+      # response job actually runs (resume_from_cancel! keeps the marker).
       @chat.clear_error
-      @chat.resume_from_cancel!
+      @chat.update!(a2a_state: nil) if @chat.a2a_state == last_user.id.to_s
       AssistantResponseJob.perform_later(last_user)
       render json: { message: "Retry initiated", message_id: last_user.id }, status: :accepted
     else

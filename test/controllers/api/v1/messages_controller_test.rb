@@ -96,13 +96,16 @@ class Api::V1::MessagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "retry resumes a chat canceled via A2A" do
-    @chat.update!(a2a_state: "canceled")
+    last_user = @chat.conversation_messages.ordered.where(type: "UserMessage").last
+    @chat.update!(a2a_state: last_user.id.to_s)
 
     post "/api/v1/chats/#{@chat.id}/messages/retry",
       headers: bearer_auth_header(@write_token)
 
     assert_response :accepted
-    # Retry is new intent; the chat is no longer reported canceled.
+    # Retry is new intent for the canceled turn; the marker clears and the
+    # chat is no longer reported canceled.
+    assert_nil @chat.reload.a2a_state
     assert_not_equal "canceled", @chat.reload.a2a_status.first
   end
 
