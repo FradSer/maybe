@@ -50,8 +50,8 @@ class Api::V1::MessagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "pending", response_body["ai_response_status"]
   end
 
-  test "should enqueue assistant response job" do
-    assert_enqueued_with(job: AssistantResponseJob) do
+  test "should enqueue assistant response job exactly once" do
+    assert_enqueued_jobs 1, only: AssistantResponseJob do
       post "/api/v1/chats/#{@chat.id}/messages",
         params: { content: "Test message" },
         headers: bearer_auth_header(@write_token)

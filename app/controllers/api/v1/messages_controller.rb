@@ -15,8 +15,8 @@ class Api::V1::MessagesController < Api::V1::BaseController
     if @message.save
       # New user intent persists first; only resume a canceled chat once the
       # message is actually saved, so a failed save keeps the cancel marker.
+      # UserMessage#after_create_commit enqueues the response exactly once.
       @chat.resume_from_cancel!
-      AssistantResponseJob.perform_later(@message)
       render :show, status: :created
     else
       render json: { error: "Failed to create message", details: @message.errors.full_messages }, status: :unprocessable_entity
