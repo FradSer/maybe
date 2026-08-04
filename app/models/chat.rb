@@ -72,4 +72,30 @@ class Chat < ApplicationRecord
       messages.where(type: [ "UserMessage", "AssistantMessage" ])
     end
   end
+
+  # A2A protocol task state (v1). Only "canceled" is persisted; all other
+  # states are derived from live pipeline state.
+  def a2a_status
+    return [ "canceled", nil ] if a2a_state == "canceled"
+
+    if error.present?
+      message = error.is_a?(Hash) ? error["message"] : error.to_s
+      return [ "failed", message ]
+    end
+
+    last = conversation_messages.ordered.last
+    return [ "completed", nil ] if last&.role == "assistant"
+
+    [ "working", nil ]
+  end
+
+  def cancel!
+    return false if [ "completed", "failed", "canceled" ].include?(a2a_status.first)
+
+    update!(a2a_state: "canceled")
+  end
+
+  def resume_from_cancel!
+    update!(a2a_state: nil) if a2a_state == "canceled"
+  end
 end
