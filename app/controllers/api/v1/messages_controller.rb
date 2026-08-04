@@ -6,6 +6,9 @@ class Api::V1::MessagesController < Api::V1::BaseController
   before_action :set_chat
 
   def create
+    # New user intent resumes a chat previously canceled via A2A
+    @chat.resume_from_cancel!
+
     @message = @chat.messages.build(
       content: message_params[:content],
       type: "UserMessage",
@@ -24,6 +27,9 @@ class Api::V1::MessagesController < Api::V1::BaseController
     last_message = @chat.messages.ordered.last
 
     if last_message&.type == "AssistantMessage"
+      # Retrying is new user intent; resume a chat previously canceled via A2A
+      @chat.resume_from_cancel!
+
       new_message = @chat.messages.create!(
         type: "AssistantMessage",
         content: "",
