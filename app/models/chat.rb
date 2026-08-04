@@ -58,6 +58,9 @@ class Chat < ApplicationRecord
 
   def ask_assistant_later(message)
     clear_error
+    # Any new user intent (web message, retry, or A2A continuation) resumes a
+    # canceled chat so the guard only skips the already-queued response.
+    resume_from_cancel!
     AssistantResponseJob.perform_later(message)
   end
 
