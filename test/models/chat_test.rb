@@ -60,6 +60,13 @@ class ChatTest < ActiveSupport::TestCase
     assert_equal [ "failed", "boom" ], chat.a2a_status
   end
 
+  test "a2a_status surfaces only the message from stored exception JSON" do
+    chat = chats(:one)
+    chat.update!(error: { "message" => "LLM error", "backtrace" => [ "/app/models/x.rb:1" ] }.to_json)
+
+    assert_equal [ "failed", "LLM error" ], chat.a2a_status
+  end
+
   test "a2a_status is canceled when marker is set" do
     chat = chats(:one)
     chat.update!(a2a_state: "canceled")

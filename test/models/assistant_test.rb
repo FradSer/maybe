@@ -62,6 +62,30 @@ class AssistantTest < ActiveSupport::TestCase
     end
   end
 
+  test "marks response complete even with no text output" do
+    @assistant.expects(:get_model_provider).with("gpt-4.1").returns(@provider)
+
+    response_chunk = provider_response_chunk(
+      id: "1",
+      model: "gpt-4.1",
+      messages: [],
+      function_requests: []
+    )
+
+    response = provider_success_response(response_chunk.data)
+
+    @provider.expects(:chat_response).with do |message, **options|
+      options[:streamer].call(response_chunk)
+      true
+    end.returns(response)
+
+    assert_difference "AssistantMessage.count", 1 do
+      @assistant.respond_to(@message)
+      message = @chat.messages.ordered.where(type: "AssistantMessage").last
+      assert_equal "complete", message.status
+    end
+  end
+
   test "responds with tool function calls" do
     @assistant.expects(:get_model_provider).with("gpt-4.1").returns(@provider).once
 

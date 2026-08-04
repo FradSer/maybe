@@ -82,7 +82,13 @@ class Chat < ApplicationRecord
     return [ "canceled", nil ] if a2a_state == "canceled"
 
     if error.present?
-      message = error.is_a?(Hash) ? error["message"] : error.to_s
+      # Chat#add_error persists e.to_json — a JSON string (with backtrace).
+      # Surface only the readable message to external agents, never internals.
+      message = if error.is_a?(Hash)
+        error["message"]
+      else
+        JSON.parse(error)["message"] rescue error.to_s
+      end
       return [ "failed", message ]
     end
 
