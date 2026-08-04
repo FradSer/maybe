@@ -27,7 +27,12 @@ RUN apt-get install --no-install-recommends -y build-essential libpq-dev git pkg
 
 # Install application gems
 COPY .ruby-version Gemfile Gemfile.lock ./
-RUN bundle install
+ARG BUNDLE_MIRROR
+RUN if [ -n "$BUNDLE_MIRROR" ]; then \
+      bundle config set --global mirror.https://rubygems.org "$BUNDLE_MIRROR" && \
+      gem install bundler -v 2.6.9 --no-document; \
+    fi \
+    && bundle install
 
 RUN rm -rf ~/.bundle/ "${BUNDLE_PATH}"/ruby/*/cache "${BUNDLE_PATH}"/ruby/*/bundler/gems/*/.git
 
