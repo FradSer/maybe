@@ -80,7 +80,13 @@ class Chat < ApplicationRecord
   # canceled user message (so the guard can skip precisely that turn); all
   # other states are derived from live pipeline state.
   def a2a_status
-    return [ "canceled", nil ] if a2a_state.present?
+    # The task is canceled only while the canceled turn is still the latest
+    # user intent. Once a newer user message arrives, the chat is resumed and
+    # reports the new turn's state — but the marker stays so the old canceled
+    # job remains suppressed.
+    if a2a_state.present? && a2a_state == last_user_message_id
+      return [ "canceled", nil ]
+    end
 
     if error.present?
       # Chat#add_error persists e.to_json — a JSON string (with backtrace).
@@ -111,7 +117,14 @@ class Chat < ApplicationRecord
     update!(a2a_state: last_user&.id || "canceled")
   end
 
+  # A newer user intent "resumes" the chat in status terms (a2a_status stops
+  # reporting "canceled"), but the canceled-message marker is intentionally
+  # kept so AssistantResponseJob keeps suppressing the canceled turn's queued
+  # response even after the resume.
   def resume_from_cancel!
-    update!(a2a_state: nil) if a2a_state.present?
+  end
+
+  def last_user_message_id
+    conversation_messages.ordered.where(type: "UserMessage").last&.id&.to_s
   end
 end
