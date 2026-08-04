@@ -10,7 +10,7 @@ module Syncable
   end
 
   # Schedules a sync for syncable.  If there is an existing sync pending/syncing for this syncable,
-  # we do not create a new sync.
+  # we do not create a new sync (its job was already enqueued at creation).
   def sync_later(parent_sync: nil)
     Sync.transaction do
       with_lock do
@@ -18,9 +18,8 @@ module Syncable
 
         unless sync
           sync = self.syncs.create!(parent: parent_sync)
+          SyncJob.perform_later(sync)
         end
-
-        SyncJob.perform_later(sync)
 
         sync
       end
