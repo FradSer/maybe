@@ -58,16 +58,9 @@ class Api::V1::MessagesControllerTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "should retry last assistant message" do
-    skip "Retry functionality needs debugging"
-
-    # Create an assistant message to retry
-    assistant_message = @chat.messages.create!(
-      type: "AssistantMessage",
-      content: "Previous response",
-      ai_model: "gpt-4"
-    )
-
+  test "should retry last user message" do
+    # chats(:one) ends with an AssistantMessage; retry re-enqueues the last
+    # UserMessage (matching the web retry pattern).
     assert_enqueued_with(job: AssistantResponseJob) do
       post "/api/v1/chats/#{@chat.id}/messages/retry",
         headers: bearer_auth_header(@write_token)
@@ -101,19 +94,25 @@ class Api::V1::MessagesControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "retry resumes a chat canceled via A2A" do
-    skip "API retry endpoint is pre-existing broken (creates empty-content message failing validation); resume fix covered by chat_test ask_assistant_later"
+    @chat.update!(a2a_state: "canceled")
+
+    post "/api/v1/chats/#{@chat.id}/messages/retry",
+      headers: bearer_auth_header(@write_token)
+
+    assert_response :accepted
+    assert_nil @chat.reload.a2a_state
   end
 
-  test "should not retry if no assistant message exists" do
-    # Remove all assistant messages
-    @chat.messages.where(type: "AssistantMessage").destroy_all
+  test "should not retry if no user message exists" do
+    # Remove all user messages
+    @chat.messages.where(type: "UserMessage").destroy_all
 
     post "/api/v1/chats/#{@chat.id}/messages/retry.json",
       headers: bearer_auth_header(@write_token)
 
     assert_response :unprocessable_entity
     response_body = JSON.parse(response.body)
-    assert_equal "No assistant message to retry", response_body["error"]
+    assert_equal "No user message to retry", response_body["error"]
   end
 
   test "should not access messages in other user's chat" do
