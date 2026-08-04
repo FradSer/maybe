@@ -4,8 +4,45 @@ class Provider::OpenaiTest < ActiveSupport::TestCase
   include LLMInterfaceTest
 
   setup do
-    @subject = @openai = Provider::Openai.new(ENV.fetch("OPENAI_ACCESS_TOKEN", "test-openai-token"))
-    @subject_model = "gpt-4.1"
+    # Pin provider env so VCR cassettes (recorded against api.openai.com) match regardless of shell env
+    with_env_overrides OPENAI_BASE_URL: nil, OPENAI_ACCESS_TOKEN: "test-openai-token", OPENAI_API_KEY: nil do
+      @subject = @openai = Provider::Openai.new("test-openai-token")
+      @subject_model = "gpt-4.1"
+    end
+  end
+
+  test "reads access token from OPENAI_ACCESS_TOKEN" do
+    with_env_overrides OPENAI_ACCESS_TOKEN: "sk-primary", OPENAI_API_KEY: "sk-secondary" do
+      assert_equal "sk-primary", Provider::Openai.access_token
+    end
+  end
+
+  test "falls back to OPENAI_API_KEY for access token" do
+    with_env_overrides OPENAI_ACCESS_TOKEN: nil, OPENAI_API_KEY: "sk-secondary" do
+      assert_equal "sk-secondary", Provider::Openai.access_token
+    end
+  end
+
+  test "returns nil access token when no env vars set" do
+    with_env_overrides OPENAI_ACCESS_TOKEN: nil, OPENAI_API_KEY: nil do
+      assert_nil Provider::Openai.access_token
+    end
+  end
+
+  test "normalizes base URL without a scheme" do
+    OpenAI::Client.expects(:new).with({ access_token: "token", uri_base: "http://10.10.0.195:8317/v1" }).returns(stub)
+
+    with_env_overrides OPENAI_BASE_URL: "10.10.0.195:8317/v1" do
+      Provider::Openai.new("token")
+    end
+  end
+
+  test "keeps base URL with a scheme" do
+    OpenAI::Client.expects(:new).with({ access_token: "token", uri_base: "https://api.openai.com/v1" }).returns(stub)
+
+    with_env_overrides OPENAI_BASE_URL: "https://api.openai.com/v1" do
+      Provider::Openai.new("token")
+    end
   end
 
   test "openai errors are automatically raised" do
