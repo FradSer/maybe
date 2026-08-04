@@ -33,6 +33,9 @@ class Chat < ApplicationRecord
     last_message = conversation_messages.ordered.last
 
     if last_message.present? && last_message.role == "user"
+      # Retrying is new intent for this exact turn; clear the cancel marker so
+      # the response job runs (resume_from_cancel! otherwise keeps it).
+      update!(a2a_state: nil) if a2a_state == last_message.id.to_s
 
       ask_assistant_later(last_message)
     end

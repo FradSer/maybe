@@ -118,6 +118,16 @@ class ChatTest < ActiveSupport::TestCase
     assert_equal "canceled", chat.a2a_state
   end
 
+  test "retry_last_message! clears the marker for the retried turn" do
+    chat = @user.chats.start!("To retry", model: "gpt-4.1")
+    last_user = chat.conversation_messages.ordered.where(type: "UserMessage").last
+    chat.update!(a2a_state: last_user.id.to_s)
+
+    chat.retry_last_message!
+
+    assert_nil chat.reload.a2a_state
+  end
+
   test "a2a_status stops reporting canceled once a newer user turn arrives" do
     chat = @user.chats.start!("Canceled turn", model: "gpt-4.1")
     canceled_message = chat.messages.last
