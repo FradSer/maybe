@@ -28,7 +28,7 @@ class Api::V1::ChatsController < Api::V1::BaseController
         )
 
         if @message.save
-          AssistantResponseJob.perform_later(@message)
+          # UserMessage#after_create_commit enqueues the response exactly once.
           render :show, status: :created
         else
           @chat.destroy
