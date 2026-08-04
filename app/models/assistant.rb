@@ -59,9 +59,12 @@ class Assistant
 
     responder.respond(previous_response_id: latest_response_id)
 
-    # Mark the response complete only on the terminal event so mid-stream
-    # tasks remain cancelable (see Chat#a2a_status).
-    assistant_message.update!(status: "complete") if assistant_message.persisted?
+    # Mark the response terminal so mid-stream tasks remain cancelable while
+    # in flight (see Chat#a2a_status). Always persist, even for a follow-up
+    # that produced no text output (empty content bypasses the presence
+    # validation), so the task is never stuck "working".
+    assistant_message.save(validate: false) unless assistant_message.persisted?
+    assistant_message.update_columns(status: "complete")
   rescue => e
     stop_thinking
     chat.add_error(e)
