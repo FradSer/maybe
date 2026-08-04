@@ -247,6 +247,19 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     assert_equal(-32602, JSON.parse(response.body).dig("error", "code"))
   end
 
+  test "returns invalid params for non-hash parts elements" do
+    [ [ 123 ], [ nil ], { "type" => "text" } ].each do |bad_parts|
+      rpc = JSON.generate({
+        jsonrpc: "2.0", id: 1, method: "message/send",
+        params: { "message" => { "role" => "user", "parts" => bad_parts } }
+      })
+      post a2a_path, params: rpc, headers: json_headers.merge(@api_key_header)
+
+      assert_response :success
+      assert_equal(-32602, JSON.parse(response.body).dig("error", "code"), "parts=#{bad_parts.inspect}")
+    end
+  end
+
   test "returns invalid params when taskId is missing" do
     post a2a_path, params: JSON.generate({ jsonrpc: "2.0", id: 1, method: "tasks/get", params: {} }), headers: json_headers.merge(@api_key_header)
 
