@@ -4,10 +4,12 @@ class Provider::Openai < Provider
   # Subclass so errors caught in this provider are raised as Provider::Openai::Error
   Error = Class.new(Provider::Error)
 
-  MODELS = %w[gpt-4.1]
+  MODELS = ENV.fetch("OPENAI_MODELS", "gpt-4.1").split(",").map(&:strip)
 
   def initialize(access_token)
-    @client = ::OpenAI::Client.new(access_token: access_token)
+    config = { access_token: access_token }
+    config[:uri_base] = ENV["OPENAI_BASE_URL"] if ENV["OPENAI_BASE_URL"].present?
+    @client = ::OpenAI::Client.new(config)
   end
 
   def supports_model?(model)
