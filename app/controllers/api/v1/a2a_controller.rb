@@ -122,7 +122,7 @@ class Api::V1::A2aController < Api::V1::BaseController
 
     def a2a_artifacts(chat)
       last_assistant = chat.conversation_messages.ordered.last
-      return [] unless last_assistant&.role == "assistant"
+      return [] unless last_assistant&.role == "assistant" && last_assistant.status == "complete"
 
       [ { name: "assistant_message", parts: [ { type: "text", text: last_assistant.content.to_s } ] } ]
     end

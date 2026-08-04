@@ -87,10 +87,10 @@ class Chat < ApplicationRecord
     end
 
     last = conversation_messages.ordered.last
-    # "completed" only once the assistant has actually produced output — the
-    # AssistantMessage row exists mid-stream and on a fresh retry before any
-    # chunk is persisted.
-    return [ "completed", nil ] if last&.role == "assistant" && last.content.present?
+    # "completed" only once the assistant response is terminal (status
+    # "complete"). Mid-stream the AssistantMessage is persisted with status
+    # "pending" and remains cancelable.
+    return [ "completed", nil ] if last&.role == "assistant" && last.status == "complete"
 
     [ "working", nil ]
   end

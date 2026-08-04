@@ -160,6 +160,17 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     assert_nil chat.reload.a2a_state
   end
 
+  test "tasks/cancel cancels an in-flight pending task" do
+    chat = @user.chats.start!("Streaming", model: "gpt-4.1")
+    chat.messages.create!(type: "AssistantMessage", content: "partial", ai_model: "gpt-4.1", status: "pending")
+
+    post a2a_path, params: tasks_cancel_rpc(chat.id), headers: json_headers.merge(@api_key_header)
+
+    assert_response :success
+    assert_equal "canceled", JSON.parse(response.body).dig("result", "status", "state")
+    assert_equal "canceled", chat.reload.a2a_state
+  end
+
   test "tasks/cancel requires write scope" do
     post a2a_path, params: tasks_cancel_rpc(chats(:one).id), headers: json_headers.merge(bearer_auth_header(@read_token))
 
