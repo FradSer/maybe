@@ -126,7 +126,8 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
 
   test "tasks/get reports canceled state" do
     chat = chats(:one)
-    chat.update!(a2a_state: "canceled")
+    last_user = chat.conversation_messages.ordered.where(type: "UserMessage").last
+    chat.update!(a2a_state: last_user.id.to_s)
 
     post a2a_path, params: tasks_get_rpc(chat.id), headers: json_headers.merge(@api_key_header)
 
@@ -136,7 +137,8 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
 
   test "canceled task delivers no artifacts" do
     chat = chats(:one) # ends with a complete assistant response
-    chat.update!(a2a_state: "canceled")
+    last_user = chat.conversation_messages.ordered.where(type: "UserMessage").last
+    chat.update!(a2a_state: last_user.id.to_s)
 
     post a2a_path, params: tasks_get_rpc(chat.id), headers: json_headers.merge(@api_key_header)
 
@@ -210,7 +212,10 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     post a2a_path, params: send_message_rpc("Continue anyway", task_id: chat.id), headers: json_headers.merge(@api_key_header)
 
     assert_response :success
-    assert_nil chat.reload.a2a_state
+    # The chat is resumed in status terms (no longer reported canceled), and
+    # the marker persists so the canceled turn's queued job stays suppressed.
+    assert_equal "working", JSON.parse(response.body).dig("result", "status", "state")
+    assert_equal "canceled", chat.reload.a2a_state
   end
 
   test "returns TaskNotFoundError for unknown task" do

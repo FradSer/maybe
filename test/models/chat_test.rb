@@ -67,11 +67,19 @@ class ChatTest < ActiveSupport::TestCase
     assert_equal [ "failed", "LLM error" ], chat.a2a_status
   end
 
-  test "a2a_status is canceled when marker is set" do
+  test "a2a_status is canceled when marker matches the last user turn" do
+    chat = @user.chats.start!("Pending", model: "gpt-4.1")
+    last_user = chat.conversation_messages.ordered.where(type: "UserMessage").last
+    chat.update!(a2a_state: last_user.id.to_s)
+
+    assert_equal [ "canceled", nil ], chat.a2a_status
+  end
+
+  test "a2a_status is not canceled when marker is a stale canceled turn" do
     chat = chats(:one)
     chat.update!(a2a_state: "canceled")
 
-    assert_equal [ "canceled", nil ], chat.a2a_status
+    assert_not_equal "canceled", chat.a2a_status.first
   end
 
   test "cancel! marks a pending task canceled" do
@@ -102,21 +110,23 @@ class ChatTest < ActiveSupport::TestCase
     assert_equal last_user.id.to_s, chat.a2a_state
   end
 
-  test "resume_from_cancel! clears the marker" do
+  test "resume_from_cancel! keeps the marker so the canceled job stays suppressed" do
     chat = @user.chats.start!("Pending", model: "gpt-4.1")
     chat.update!(a2a_state: "canceled")
 
     chat.resume_from_cancel!
-    assert_nil chat.a2a_state
+    assert_equal "canceled", chat.a2a_state
   end
 
-  test "ask_assistant_later resumes a canceled chat" do
-    chat = @user.chats.start!("Canceled", model: "gpt-4.1")
-    chat.update!(a2a_state: "canceled")
-    message = chat.messages.last
+  test "a2a_status stops reporting canceled once a newer user turn arrives" do
+    chat = @user.chats.start!("Canceled turn", model: "gpt-4.1")
+    canceled_message = chat.messages.last
+    chat.update!(a2a_state: canceled_message.id.to_s)
+    assert_equal [ "canceled", nil ], chat.a2a_status
 
-    chat.ask_assistant_later(message)
-
-    assert_nil chat.reload.a2a_state
+    chat.messages.create!(type: "UserMessage", content: "Newer turn", ai_model: "gpt-4.1")
+    assert_equal [ "working", nil ], chat.a2a_status
+    # Marker persists so the canceled turn's queued job stays suppressed.
+    assert_equal canceled_message.id.to_s, chat.a2a_state
   end
 end

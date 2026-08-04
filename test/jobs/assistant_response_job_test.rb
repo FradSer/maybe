@@ -39,6 +39,20 @@ class AssistantResponseJobTest < ActiveJob::TestCase
     AssistantResponseJob.perform_now(newer_message)
   end
 
+  test "canceled turn's queued job stays suppressed after resume" do
+    chat = users(:family_admin).chats.start!("First turn", model: "gpt-4.1")
+    canceled_message = chat.messages.last
+    chat.update!(a2a_state: canceled_message.id.to_s)
+
+    # Simulate the resume path (a newer message via ask_assistant_later, which
+    # no longer clears the marker). The canceled turn's job must still skip.
+    newer_message = chat.messages.create!(type: "UserMessage", content: "Newer turn", ai_model: "gpt-4.1")
+    chat.ask_assistant_later(newer_message)
+
+    canceled_message.expects(:request_response).never
+    AssistantResponseJob.perform_now(canceled_message)
+  end
+
   test "runs a retried user message even when an assistant message is the last row" do
     chat = users(:family_admin).chats.start!("Retry me", model: "gpt-4.1")
     user_message = chat.messages.last

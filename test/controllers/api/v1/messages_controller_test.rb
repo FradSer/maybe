@@ -79,7 +79,9 @@ class Api::V1::MessagesControllerTest < ActionDispatch::IntegrationTest
       headers: bearer_auth_header(@write_token)
 
     assert_response :created
-    assert_nil @chat.reload.a2a_state
+    # The new user turn resumes the chat in status terms (not reported
+    # canceled) even though the canceled-message marker persists.
+    assert_not_equal "canceled", @chat.reload.a2a_status.first
   end
 
   test "failed create keeps the A2A cancel marker" do
@@ -100,7 +102,8 @@ class Api::V1::MessagesControllerTest < ActionDispatch::IntegrationTest
       headers: bearer_auth_header(@write_token)
 
     assert_response :accepted
-    assert_nil @chat.reload.a2a_state
+    # Retry is new intent; the chat is no longer reported canceled.
+    assert_not_equal "canceled", @chat.reload.a2a_status.first
   end
 
   test "retry clears a previous chat error" do
