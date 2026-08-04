@@ -49,7 +49,7 @@ class Api::V1::A2aController < Api::V1::BaseController
       end
 
       text = Array(params.dig("message", "parts"))
-        .find { |part| part["type"] == "text" && part["text"].present? }
+        .find { |part| part.is_a?(Hash) && part["type"] == "text" && part["text"].present? }
         &.dig("text")
       return render_a2a_error(-32602, "Invalid params: message must contain a non-empty text part") if text.blank?
 
