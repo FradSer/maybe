@@ -152,6 +152,9 @@ class Sync < ApplicationRecord
 
     def handle_completion_transition
       family.touch(:latest_sync_completed_at)
+      # Note: for accounts, this reflects "balances materialized through" — Account::Syncer
+      # does not fetch transactions (linked accounts get them via the plaid item sync).
+      # Do not use the account-level value to gate data refreshes for linked accounts.
       syncable.update!(data_synced_through: Date.current) if syncable.respond_to?(:data_synced_through)
     end
 
