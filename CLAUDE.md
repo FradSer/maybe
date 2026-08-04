@@ -4,6 +4,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Common Development Commands
 
+### Setup & Versions
+- Ruby 3.4.4, Rails ~> 7.2.2
+
 ### Development Server
 - `bin/dev` - Start development server (Rails, Sidekiq, Tailwind CSS watcher)
 - `bin/rails server` - Start Rails server only
@@ -11,14 +14,14 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ### Testing
 - `bin/rails test` - Run all tests
-- `bin/rails test:db` - Run tests with database reset
+- `bin/rails db:create` `bin/rails db:schema:load` `bin/rails db:seed` - Set up test database (CI uses this sequence)
 - `bin/rails test:system` - Run system tests only (use sparingly - they take longer)
 - `bin/rails test test/models/account_test.rb` - Run specific test file
 - `bin/rails test test/models/account_test.rb:42` - Run specific test at line
 
 ### Linting & Formatting
 - `bin/rubocop` - Run Ruby linter
-- `npm run lint` - Check JavaScript/TypeScript code
+- `npm run style:check` - Check JavaScript/TypeScript code
 - `npm run lint:fix` - Fix JavaScript/TypeScript issues
 - `npm run format` - Format JavaScript/TypeScript code
 - `bin/brakeman` - Run security analysis
@@ -41,8 +44,8 @@ ALWAYS run these commands before opening a pull request:
    - `bin/rails test:system` - Run system tests (only when applicable, they take longer)
 
 2. **Linting** (Required):
-   - `bin/rubocop -f github -a` - Ruby linting with auto-correct
-   - `bundle exec erb_lint ./app/**/*.erb -a` - ERB linting with auto-correct
+   - `bin/rubocop -f github` - Ruby linting
+   - `bundle exec erb_lint` - ERB linting (reads config from `.erb_lint.yml`)
 
 3. **Security** (Required):
    - `bin/brakeman --no-pager` - Security analysis
@@ -146,7 +149,6 @@ Sidekiq handles asynchronous tasks:
 
 ### Development Workflow
 - Feature branches merged to `main`
-- Docker support for consistent environments
 - Environment variables via `.env` files
 - Lookbook for component development (`/lookbook`)
 - Letter Opener for email preview in development
