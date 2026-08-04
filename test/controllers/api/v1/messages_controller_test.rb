@@ -103,6 +103,16 @@ class Api::V1::MessagesControllerTest < ActionDispatch::IntegrationTest
     assert_nil @chat.reload.a2a_state
   end
 
+  test "retry clears a previous chat error" do
+    @chat.update!(error: { "message" => "boom" }.to_json)
+
+    post "/api/v1/chats/#{@chat.id}/messages/retry",
+      headers: bearer_auth_header(@write_token)
+
+    assert_response :accepted
+    assert_nil @chat.reload.error
+  end
+
   test "should not retry if no user message exists" do
     # Remove all user messages
     @chat.messages.where(type: "UserMessage").destroy_all
