@@ -61,7 +61,7 @@ class Provider::Registry
       end
 
       def openai
-        access_token = ENV.fetch("OPENAI_ACCESS_TOKEN", Setting.openai_access_token)
+        access_token = Provider::Openai.access_token.presence || Setting.openai_access_token
 
         return nil unless access_token.present?
 

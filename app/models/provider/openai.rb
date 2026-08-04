@@ -6,9 +6,13 @@ class Provider::Openai < Provider
 
   MODELS = ENV.fetch("OPENAI_MODELS", "gpt-4.1").split(",").map(&:strip)
 
+  def self.access_token
+    ENV["OPENAI_ACCESS_TOKEN"].presence || ENV["OPENAI_API_KEY"].presence
+  end
+
   def initialize(access_token)
     config = { access_token: access_token }
-    config[:uri_base] = ENV["OPENAI_BASE_URL"] if ENV["OPENAI_BASE_URL"].present?
+    config[:uri_base] = normalize_base_url(ENV["OPENAI_BASE_URL"]) if ENV["OPENAI_BASE_URL"].present?
     @client = ::OpenAI::Client.new(config)
   end
 
@@ -85,4 +89,8 @@ class Provider::Openai < Provider
 
   private
     attr_reader :client
+
+    def normalize_base_url(url)
+      url.match?(%r{\Ahttps?://}) ? url : "http://#{url}"
+    end
 end
