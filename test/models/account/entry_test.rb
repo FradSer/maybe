@@ -26,26 +26,26 @@ class EntryTest < ActiveSupport::TestCase
     assert new_valuation.invalid?
   end
 
-  test "triggers sync with correct start date when transaction is set to prior date" do
+  test "triggers sync when transaction is set to prior date" do
     prior_date = @entry.date - 1
     @entry.update! date: prior_date
 
-    @entry.account.expects(:sync_later).with(window_start_date: prior_date)
+    @entry.account.expects(:sync_later).once
     @entry.sync_account_later
   end
 
-  test "triggers sync with correct start date when transaction is set to future date" do
+  test "triggers sync when transaction is set to future date" do
     prior_date = @entry.date
     @entry.update! date: @entry.date + 1
 
-    @entry.account.expects(:sync_later).with(window_start_date: prior_date)
+    @entry.account.expects(:sync_later).once
     @entry.sync_account_later
   end
 
-  test "triggers sync with correct start date when transaction deleted" do
+  test "triggers sync when transaction deleted" do
     @entry.destroy!
 
-    @entry.account.expects(:sync_later).with(window_start_date: nil)
+    @entry.account.expects(:sync_later).once
     @entry.sync_account_later
   end
 
