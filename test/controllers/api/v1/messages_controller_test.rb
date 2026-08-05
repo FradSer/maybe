@@ -50,24 +50,17 @@ class Api::V1::MessagesControllerTest < ActionDispatch::IntegrationTest
     assert_equal "pending", response_body["ai_response_status"]
   end
 
-  test "should enqueue assistant response job" do
-    assert_enqueued_with(job: AssistantResponseJob) do
+  test "should enqueue assistant response job exactly once" do
+    assert_enqueued_jobs 1, only: AssistantResponseJob do
       post "/api/v1/chats/#{@chat.id}/messages",
         params: { content: "Test message" },
         headers: bearer_auth_header(@write_token)
     end
   end
 
-  test "should retry last assistant message" do
-    skip "Retry functionality needs debugging"
-
-    # Create an assistant message to retry
-    assistant_message = @chat.messages.create!(
-      type: "AssistantMessage",
-      content: "Previous response",
-      ai_model: "gpt-4"
-    )
-
+  test "should retry last user message" do
+    # chats(:one) ends with an AssistantMessage; retry re-enqueues the last
+    # UserMessage (matching the web retry pattern).
     assert_enqueued_with(job: AssistantResponseJob) do
       post "/api/v1/chats/#{@chat.id}/messages/retry",
         headers: bearer_auth_header(@write_token)
@@ -78,16 +71,64 @@ class Api::V1::MessagesControllerTest < ActionDispatch::IntegrationTest
     assert response_body["message_id"].present?
   end
 
-  test "should not retry if no assistant message exists" do
-    # Remove all assistant messages
-    @chat.messages.where(type: "AssistantMessage").destroy_all
+  test "create resumes a chat canceled via A2A" do
+    @chat.update!(a2a_state: "canceled")
+
+    post "/api/v1/chats/#{@chat.id}/messages",
+      params: { content: "New intent" },
+      headers: bearer_auth_header(@write_token)
+
+    assert_response :created
+    # The new user turn resumes the chat in status terms (not reported
+    # canceled) even though the canceled-message marker persists.
+    assert_not_equal "canceled", @chat.reload.a2a_status.first
+  end
+
+  test "failed create keeps the A2A cancel marker" do
+    @chat.update!(a2a_state: "canceled")
+
+    post "/api/v1/chats/#{@chat.id}/messages",
+      params: { content: "" },
+      headers: bearer_auth_header(@write_token)
+
+    assert_response :unprocessable_entity
+    assert_equal "canceled", @chat.reload.a2a_state
+  end
+
+  test "retry resumes a chat canceled via A2A" do
+    last_user = @chat.conversation_messages.ordered.where(type: "UserMessage").last
+    @chat.update!(a2a_state: last_user.id.to_s)
+
+    post "/api/v1/chats/#{@chat.id}/messages/retry",
+      headers: bearer_auth_header(@write_token)
+
+    assert_response :accepted
+    # Retry is new intent for the canceled turn; the marker clears and the
+    # chat is no longer reported canceled.
+    assert_nil @chat.reload.a2a_state
+    assert_not_equal "canceled", @chat.reload.a2a_status.first
+  end
+
+  test "retry clears a previous chat error" do
+    @chat.update!(error: { "message" => "boom" }.to_json)
+
+    post "/api/v1/chats/#{@chat.id}/messages/retry",
+      headers: bearer_auth_header(@write_token)
+
+    assert_response :accepted
+    assert_nil @chat.reload.error
+  end
+
+  test "should not retry if no user message exists" do
+    # Remove all user messages
+    @chat.messages.where(type: "UserMessage").destroy_all
 
     post "/api/v1/chats/#{@chat.id}/messages/retry.json",
       headers: bearer_auth_header(@write_token)
 
     assert_response :unprocessable_entity
     response_body = JSON.parse(response.body)
-    assert_equal "No assistant message to retry", response_body["error"]
+    assert_equal "No user message to retry", response_body["error"]
   end
 
   test "should not access messages in other user's chat" do

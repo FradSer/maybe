@@ -20,7 +20,8 @@ class Assistant
     assistant_message = AssistantMessage.new(
       chat: chat,
       content: "",
-      ai_model: message.ai_model
+      ai_model: message.ai_model,
+      status: "pending"
     )
 
     responder = Assistant::Responder.new(
@@ -57,6 +58,13 @@ class Assistant
     end
 
     responder.respond(previous_response_id: latest_response_id)
+
+    # Mark the response terminal so mid-stream tasks remain cancelable while
+    # in flight (see Chat#a2a_status). Always persist, even for a follow-up
+    # that produced no text output (empty content bypasses the presence
+    # validation), so the task is never stuck "working".
+    assistant_message.save(validate: false) unless assistant_message.persisted?
+    assistant_message.update_columns(status: "complete")
   rescue => e
     stop_thinking
     chat.add_error(e)

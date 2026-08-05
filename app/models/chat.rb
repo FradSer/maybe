@@ -33,6 +33,9 @@ class Chat < ApplicationRecord
     last_message = conversation_messages.ordered.last
 
     if last_message.present? && last_message.role == "user"
+      # Retrying is new intent for this exact turn; clear the cancel marker so
+      # the response job runs (resume_from_cancel! otherwise keeps it).
+      update!(a2a_state: nil) if a2a_state == last_message.id.to_s
 
       ask_assistant_later(last_message)
     end
@@ -58,6 +61,9 @@ class Chat < ApplicationRecord
 
   def ask_assistant_later(message)
     clear_error
+    # Any new user intent (web message, retry, or A2A continuation) resumes a
+    # canceled chat so the guard only skips the already-queued response.
+    resume_from_cancel!
     AssistantResponseJob.perform_later(message)
   end
 
@@ -71,5 +77,57 @@ class Chat < ApplicationRecord
     else
       messages.where(type: [ "UserMessage", "AssistantMessage" ])
     end
+  end
+
+  # A2A protocol task state (v1). "canceled" is persisted as the id of the
+  # canceled user message (so the guard can skip precisely that turn); all
+  # other states are derived from live pipeline state.
+  def a2a_status
+    # The task is canceled only while the canceled turn is still the latest
+    # user intent. Once a newer user message arrives, the chat is resumed and
+    # reports the new turn's state — but the marker stays so the old canceled
+    # job remains suppressed.
+    if a2a_state.present? && a2a_state == last_user_message_id
+      return [ "canceled", nil ]
+    end
+
+    if error.present?
+      # Chat#add_error persists e.to_json — a JSON string (with backtrace).
+      # Surface only the readable message to external agents, never internals.
+      message = if error.is_a?(Hash)
+        error["message"]
+      else
+        JSON.parse(error)["message"] rescue error.to_s
+      end
+      return [ "failed", message ]
+    end
+
+    last = conversation_messages.ordered.last
+    # "completed" only once the assistant response is terminal (status
+    # "complete"). Mid-stream the AssistantMessage is persisted with status
+    # "pending" and remains cancelable.
+    return [ "completed", nil ] if last&.role == "assistant" && last.status == "complete"
+
+    [ "working", nil ]
+  end
+
+  def cancel!
+    return false if [ "completed", "failed", "canceled" ].include?(a2a_status.first)
+
+    # Persist the id of the turn being canceled so the job guard can skip
+    # exactly that message, even if a newer message resumes the chat later.
+    last_user = conversation_messages.ordered.where(type: "UserMessage").last
+    update!(a2a_state: last_user&.id || "canceled")
+  end
+
+  # A newer user intent "resumes" the chat in status terms (a2a_status stops
+  # reporting "canceled"), but the canceled-message marker is intentionally
+  # kept so AssistantResponseJob keeps suppressing the canceled turn's queued
+  # response even after the resume.
+  def resume_from_cancel!
+  end
+
+  def last_user_message_id
+    conversation_messages.ordered.where(type: "UserMessage").last&.id&.to_s
   end
 end
