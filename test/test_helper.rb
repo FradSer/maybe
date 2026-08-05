@@ -5,17 +5,19 @@ if ENV["COVERAGE"] == "true"
   end
 end
 
-require_relative "../config/environment"
-
 ENV["RAILS_ENV"] ||= "test"
 
-# Set Plaid to sandbox mode for tests
+# Sandbox credentials for the test environment. The plaid initializer also
+# defaults these when RAILS_ENV=test (it boots before this file on full
+# `bin/rails test` runs); these keep VCR filtering consistent here.
 ENV["PLAID_ENV"] = "sandbox"
 ENV["PLAID_CLIENT_ID"] ||= "test_client_id"
 ENV["PLAID_SECRET"] ||= "test_secret"
 
 # Fixes Segfaults on M1 Macs when running tests in parallel (temporary workaround)
 ENV["PGGSSENCMODE"] = "disable"
+
+require_relative "../config/environment"
 
 require "rails/test_help"
 require "minitest/mock"
