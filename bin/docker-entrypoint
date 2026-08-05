@@ -1,8 +1,20 @@
 #!/bin/bash -e
 
-# If running the rails server then create or migrate existing database
-if [ "${1}" == "./bin/rails" ] && [ "${2}" == "server" ]; then
-  ./bin/rails db:prepare
+# Single-container entrypoint (runs as uid 1000): initialize the data dirs,
+# then exec whatever command was given (default: supervisord).
+export PATH="/usr/lib/postgresql/15/bin:$PATH"
+
+mkdir -p /data/postgres /data/redis
+
+# Initialize the postgres cluster on first boot (data persists in the maybe-data volume)
+if [ ! -f /data/postgres/PG_VERSION ]; then
+  printf '%s' "$POSTGRES_PASSWORD" > /tmp/pgpass
+  chmod 600 /tmp/pgpass
+  initdb -D /data/postgres -U "$POSTGRES_USER" \
+    --pwfile=/tmp/pgpass \
+    --auth-host=scram-sha-256 --auth-local=trust \
+    --encoding=UTF8 --locale=C.UTF-8
+  rm -f /tmp/pgpass
 fi
 
-exec "${@}"
+exec "$@"
