@@ -21,7 +21,7 @@ class TransactionsController < ApplicationController
                          :transfer_as_inflow, :transfer_as_outflow
                        )
 
-    @pagy, @transactions = pagy(base_scope, limit: per_page)
+    @pagy, @transactions = paginate(base_scope, limit: per_page)
   end
 
   def clear_filter

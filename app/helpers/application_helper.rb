@@ -1,5 +1,28 @@
 module ApplicationHelper
-  include Pagy::Frontend
+  # Pagy 43 made `series` protected; replicate its 7-slot series for the custom nav:
+  # Integers are page links, Strings mark the current page, :gap renders the ellipsis.
+  def pagy_series(pagy)
+    slots = 7
+    last = pagy.pages
+    page = pagy.page
+    return (1..last).to_a if slots >= last
+
+    half = (slots - 1) / 2
+    start = if page <= half
+      1
+    elsif page > (last - slots + half)
+      last - slots + 1
+    else
+      page - half
+    end
+
+    series = (start...(start + slots)).to_a
+    series[0] = 1
+    series[1] = :gap unless series[1] == 2
+    series[-2] = :gap unless series[-2] == last - 1
+    series[-1] = last
+    series.map { |item| item == page ? item.to_s : item }
+  end
 
   def styled_form_with(**options, &block)
     options[:builder] = StyledFormBuilder
