@@ -3,13 +3,25 @@ class ApplicationController < ActionController::Base
           SelfHostable, StoreLocation, Impersonatable, Breadcrumbable,
           FeatureGuardable, Notifiable
 
-  include Pagy::Backend
+  include Pagy::Method
 
   before_action :detect_os
   before_action :set_default_chat
   before_action :set_active_storage_url_options
 
   private
+    # Pagy 43 removed the :last_page overflow option (out-of-range pages now return
+    # an empty page); clamp to the last page to keep the previous behavior.
+    def paginate(collection, **options)
+      pagy, records = pagy(collection, **options)
+
+      if pagy.page > pagy.pages && pagy.pages.positive?
+        pagy, records = pagy(collection, **options.merge(page: pagy.pages))
+      end
+
+      [ pagy, records ]
+    end
+
     def detect_os
       user_agent = request.user_agent
       @os = case user_agent

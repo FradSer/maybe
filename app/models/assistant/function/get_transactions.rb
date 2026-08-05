@@ -1,5 +1,5 @@
 class Assistant::Function::GetTransactions < Assistant::Function
-  include Pagy::Backend
+  include Pagy::Method
 
   class << self
     def default_page_size
@@ -139,16 +139,25 @@ class Assistant::Function::GetTransactions < Assistant::Function
     pagy_query = params["order"] == "asc" ? transactions_query.chronological : transactions_query.reverse_chronological
 
     # By default, we give a small page size to force the AI to use filters effectively and save on tokens
-    pagy, paginated_transactions = pagy(
-      pagy_query.includes(
-        { entry: :account },
-        :category, :merchant, :tags,
-        transfer_as_outflow: { inflow_transaction: { entry: :account } },
-        transfer_as_inflow: { outflow_transaction: { entry: :account } }
-      ),
-      page: params["page"] || 1,
+    pagy_options = {
+      request: { params: {} },
+      page: (params["page"] || 1).to_i,
       limit: default_page_size
+    }
+
+    query = pagy_query.includes(
+      { entry: :account },
+      :category, :merchant, :tags,
+      transfer_as_outflow: { inflow_transaction: { entry: :account } },
+      transfer_as_inflow: { outflow_transaction: { entry: :account } }
     )
+
+    pagy, paginated_transactions = pagy(query, **pagy_options)
+
+    # Pagy 43 removed the :last_page overflow option; clamp to the last page.
+    if pagy.page > pagy.pages && pagy.pages.positive?
+      pagy, paginated_transactions = pagy(query, **pagy_options.merge(page: pagy.pages))
+    end
 
     totals = search.totals
 

@@ -27,7 +27,7 @@ module AccountableResource
     @q = params.fetch(:q, {}).permit(:search)
     entries = @account.entries.search(@q).reverse_chronological
 
-    @pagy, @entries = pagy(entries, limit: params[:per_page] || "10")
+    @pagy, @entries = paginate(entries, limit: (params[:per_page] || "10").to_i)
   end
 
   def edit
