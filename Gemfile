@@ -61,7 +61,7 @@ gem "faraday-retry"
 gem "faraday-multipart"
 gem "inline_svg"
 gem "octokit"
-gem "pagy"
+gem "pagy", "~> 9.3"
 gem "rails-settings-cached"
 gem "tzinfo-data", platforms: %i[windows jruby]
 gem "csv"
@@ -114,4 +114,8 @@ group :test do
   gem "webmock"
   gem "climate_control"
   gem "simplecov", require: false
+  # minitest 6 is incompatible with Rails 7.2's test runner; pin the 5.x line.
+  # minitest/mock was split out of minitest in 6.x — keep the standalone gem for 5.x too.
+  gem "minitest", "~> 5.25"
+  gem "minitest-mock", "~> 5.27"
 end
