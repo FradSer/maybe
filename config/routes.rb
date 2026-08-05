@@ -219,6 +219,9 @@ Rails.application.routes.draw do
         end
       end
 
+      # A2A protocol (JSON-RPC 2.0) — single dispatch endpoint
+      post "a2a", to: "a2a#create"
+
       # Test routes for API controller testing (only available in test environment)
       if Rails.env.test?
         get "test", to: "test#index"
@@ -256,6 +259,9 @@ Rails.application.routes.draw do
     post "plaid_eu"
     post "stripe"
   end
+
+  # A2A agent card (machine-readable discovery document)
+  get ".well-known/agent-card", to: "well_known/agent_card#show", as: :agent_card
 
   get "redis-configuration-error", to: "pages#redis_configuration_error"
 

@@ -13,7 +13,10 @@ class Api::V1::MessagesController < Api::V1::BaseController
     )
 
     if @message.save
-      AssistantResponseJob.perform_later(@message)
+      # New user intent persists first; only resume a canceled chat once the
+      # message is actually saved, so a failed save keeps the cancel marker.
+      # UserMessage#after_create_commit enqueues the response exactly once.
+      @chat.resume_from_cancel!
       render :show, status: :created
     else
       render json: { error: "Failed to create message", details: @message.errors.full_messages }, status: :unprocessable_entity
@@ -21,19 +24,21 @@ class Api::V1::MessagesController < Api::V1::BaseController
   end
 
   def retry
-    last_message = @chat.messages.ordered.last
+    # Retry by re-enqueuing the last user message, matching the web
+    # Chat#retry_last_message! pattern (AssistantResponseJob expects a
+    # UserMessage). Creates no new message row.
+    last_user = @chat.conversation_messages.ordered.where(type: "UserMessage").last
 
-    if last_message&.type == "AssistantMessage"
-      new_message = @chat.messages.create!(
-        type: "AssistantMessage",
-        content: "",
-        ai_model: last_message.ai_model
-      )
-
-      AssistantResponseJob.perform_later(new_message)
-      render json: { message: "Retry initiated", message_id: new_message.id }, status: :accepted
+    if last_user.present?
+      # Retrying is new user intent: clear any prior error and — when the
+      # canceled turn is the one being retried — clear the marker so the
+      # response job actually runs (resume_from_cancel! keeps the marker).
+      @chat.clear_error
+      @chat.update!(a2a_state: nil) if @chat.a2a_state == last_user.id.to_s
+      AssistantResponseJob.perform_later(last_user)
+      render json: { message: "Retry initiated", message_id: last_user.id }, status: :accepted
     else
-      render json: { error: "No assistant message to retry" }, status: :unprocessable_entity
+      render json: { error: "No user message to retry" }, status: :unprocessable_entity
     end
   end
 
