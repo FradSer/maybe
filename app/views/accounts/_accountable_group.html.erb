@@ -6,7 +6,7 @@
     <% disclosure.with_summary_content do %>
       <div class="flex items-center gap-3">
         <%= icon "chevron-right", class: "group-open:transform group-open:rotate-90" %>
-        <%= tag.span class: class_names("text-sm text-primary font-medium", "animate-pulse" => account_group.syncing?) do %>
+        <%= tag.span class: class_names("text-sm text-primary font-medium", "opacity-50" => account_group.syncing?) do %>
           <%= account_group.name %>
         <% end %>
       </div>
@@ -33,7 +33,7 @@
 
           <div class="min-w-0 grow">
             <div class="flex items-center gap-2 mb-0.5">
-              <%= tag.p account.name, class: class_names("text-sm text-primary font-medium truncate", "animate-pulse" => account.syncing?) %>
+              <%= tag.p account.name, class: class_names("text-sm text-primary font-medium truncate", "opacity-50" => account.syncing?) %>
             </div>
             <%= tag.p account.short_subtype_label, class: "text-sm text-secondary truncate" %>
           </div>

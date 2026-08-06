@@ -42,19 +42,19 @@
             <div class="flex items-center justify-between text-sm">
               <dt class="text-secondary">Status</dt>
               <% if @budget_category.available_to_spend.negative? %>
-                <dd class="flex items-center gap-1 text-red-500 font-medium">
+                <dd class="flex items-center gap-1 text-destructive font-medium">
                   <%= icon "alert-circle", size: "sm", color: "destructive" %>
                   <%= format_money @budget_category.available_to_spend_money.abs %>
                   <span>overspent</span>
                 </dd>
               <% elsif @budget_category.available_to_spend.zero? %>
-                <dd class="flex items-center gap-1 text-orange-500 font-medium">
+                <dd class="flex items-center gap-1 text-warning font-medium">
                   <%= icon "x-circle", size: "sm", color: "warning" %>
                   <%= format_money @budget_category.available_to_spend_money %>
                   <span>left</span>
                 </dd>
               <% else %>
-                <dd class="text-primary flex items-center gap-1 text-green-500 font-medium">
+                <dd class="text-primary flex items-center gap-1 text-success font-medium">
                   <%= icon "check-circle", size: "sm", color: "success" %>
                   <%= format_money @budget_category.available_to_spend_money %>
                   <span>left</span>

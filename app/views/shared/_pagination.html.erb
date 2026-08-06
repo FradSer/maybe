@@ -6,11 +6,11 @@
       <% if pagy.previous %>
         <%= link_to pagy.page_url(pagy.previous),
               data: { turbo_frame: :_top },
-              class: "inline-flex items-center p-2 text-sm font-medium text-secondary bg-container-inset hover:border-secondary hover:text-secondary" do %>
+              class: "inline-flex items-center p-2 text-sm font-medium text-secondary bg-container-inset hover:bg-container-hover hover:text-primary" do %>
           <%= icon("chevron-left") %>
         <% end %>
       <% else %>
-        <div class="inline-flex items-center p-2 text-sm font-medium hover:border-secondary">
+        <div class="inline-flex items-center p-2 text-sm font-medium text-subdued opacity-50">
           <%= icon("chevron-left") %>
         </div>
       <% end %>
@@ -20,7 +20,7 @@
         <% if series_item.is_a?(Integer) %>
           <%= link_to pagy.page_url(series_item),
                 data: { turbo_frame: :_top },
-                class: "rounded-md px-2 py-1 inline-flex items-center text-sm font-medium text-secondary hover:border-secondary hover:text-secondary" do %>
+                class: "rounded-md px-2 py-1 inline-flex items-center text-sm font-medium text-secondary hover:bg-surface-hover hover:text-primary" do %>
             <%= series_item %>
           <% end %>
         <% elsif series_item.is_a?(String) %>
@@ -38,11 +38,11 @@
       <% if pagy.next %>
         <%= link_to pagy.page_url(pagy.next),
               data: { turbo_frame: :_top },
-              class: "inline-flex items-center p-2 text-sm font-medium text-secondary hover:border-secondary hover:text-secondary" do %>
+              class: "inline-flex items-center p-2 text-sm font-medium text-secondary bg-container-inset hover:bg-container-hover hover:text-primary" do %>
           <%= icon("chevron-right") %>
         <% end %>
       <% else %>
-        <div class="inline-flex items-center p-2 text-sm font-medium hover:border-secondary">
+        <div class="inline-flex items-center p-2 text-sm font-medium text-subdued opacity-50">
           <%= icon("chevron-right") %>
         </div>
       <% end %>
@@ -52,6 +52,6 @@
     <%= select_tag :per_page,
                    options_for_select(["10", "20", "30", "50"], pagy.limit),
                    data: { controller: "selectable-link" },
-                   class: "py-1.5 pr-8 text-sm text-primary font-medium bg-container-inset border border-secondary rounded-lg focus:border-secondary focus:ring-secondary focus-visible:ring-secondary" %>
+                   class: "py-1.5 pr-8 text-sm text-primary font-medium bg-container-inset border border-secondary rounded-lg focus-visible:outline-2 focus-visible:outline-gray-900 focus-visible:outline-offset-2" %>
   </div>
 </nav>

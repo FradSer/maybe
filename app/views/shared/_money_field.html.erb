@@ -13,7 +13,7 @@
       <%= form.label options[:label] || t(".label"), class: "form-field__label" do %>
         <%= options[:label] || t(".label") %>
         <% if options[:required] %>
-          <span class="text-red-500 ml-0.5">*</span>
+          <span class="text-destructive ml-0.5">*</span>
         <% end %>
       <% end %>
       <div class="form-field__actions">
@@ -32,7 +32,7 @@
       <%= form.label options[:label] || t(".label"), class: "form-field__label" do %>
         <%= options[:label] || t(".label") %>
         <% if options[:required] %>
-          <span class="text-red-500 ml-0.5">*</span>
+          <span class="text-destructive ml-0.5">*</span>
         <% end %>
       <% end %>
     <% end %>

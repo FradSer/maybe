@@ -276,7 +276,7 @@
   }
 
   hr {
-    @apply text-gray-200;
+    @apply border-divider;
   }
 
   /* We control the sizing through DialogComponent, so reset this value */
@@ -294,12 +294,12 @@
   }
 
   input[type='radio'] {
-    @apply border-gray-300 text-indigo-600 focus:ring-indigo-600;
+    @apply border-secondary text-primary focus:ring-indigo-600;
     /* Default light mode */
 
     @variant theme-dark {
       /* Dark mode radio button base and checked styles */
-      @apply border-gray-600 bg-gray-700 checked:bg-blue-500 focus:ring-blue-500 focus:ring-offset-gray-800;
+      @apply border-secondary bg-surface-inset checked:bg-blue-500 focus:ring-blue-500 focus:ring-offset-gray-800;
     }
   }
 }
@@ -353,7 +353,7 @@
 
   .form-field__input {
     @apply text-primary border-none bg-container text-sm opacity-100 w-full p-0;
-    @apply focus:opacity-100 focus:outline-hidden focus:ring-0;
+    @apply focus-visible:outline-2 focus-visible:outline-gray-900 focus-visible:outline-offset-2;
     @apply placeholder-shown:opacity-50;
     @apply disabled:text-subdued;
     @apply text-ellipsis overflow-hidden whitespace-nowrap;
@@ -442,5 +442,14 @@
     @variant theme-dark {
       fill: var(--color-white);
     }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
