@@ -51,7 +51,17 @@
     </div>
 
     <% if @entries.empty? %>
-      <p class="text-secondary text-sm p-4"><%= t(".no_entries") %></p>
+      <div class="flex flex-col items-center py-8">
+        <p class="text-secondary text-sm"><%= t(".no_entries") %></p>
+        <%= render DS::Link.new(
+          text: "New transaction",
+          icon: "plus",
+          href: new_transaction_path(account_id: @account.id),
+          frame: :modal,
+          variant: "ghost",
+          class: "mt-2"
+        ) %>
+      </div>
     <% else %>
       <%= tag.div id: dom_id(@account, "entries_bulk_select"),
                 data: {
