@@ -1,0 +1,200 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-08-06T00:00:00Z",
+  "title": "Design System: Maybe",
+  "extensions": {
+    "colorMeta": {
+      "primary-text": { "role": "neutral", "displayName": "Warm Black", "canonical": "#171717", "tonalRamp": ["#171717", "#242424", "#363636", "#5C5C5C", "#737373", "#9E9E9E", "#CFCFCF", "#E7E7E7"] },
+      "primary-text-inverse": { "role": "neutral", "displayName": "Inverse Text", "canonical": "#ffffff", "tonalRamp": ["#ffffff", "#FAFAFA", "#F7F7F7", "#F0F0F0", "#E7E7E7", "#CFCFCF", "#9E9E9E", "#737373"] },
+      "secondary-text": { "role": "neutral", "displayName": "Secondary Text", "canonical": "#737373", "tonalRamp": ["#737373", "#5C5C5C", "#363636", "#242424", "#171717", "#9E9E9E", "#CFCFCF", "#E7E7E7"] },
+      "subdued-text": { "role": "neutral", "displayName": "Subdued Text", "canonical": "#9E9E9E", "tonalRamp": ["#9E9E9E", "#737373", "#5C5C5C", "#363636", "#CFCFCF", "#E7E7E7", "#F0F0F0", "#FAFAFA"] },
+      "link-text": { "role": "accent", "displayName": "Link Blue", "canonical": "#1570EF", "tonalRamp": ["#1570EF", "#175CD3", "#1849A9", "#194185", "#2E90FA", "#53B1FD", "#84CAFF", "#B2DDFF"] },
+      "surface-bg": { "role": "neutral", "displayName": "Surface", "canonical": "#F7F7F7", "tonalRamp": ["#F7F7F7", "#F0F0F0", "#E7E7E7", "#CFCFCF", "#FAFAFA", "#ffffff", "#242424", "#363636"] },
+      "container-bg": { "role": "neutral", "displayName": "Container", "canonical": "#ffffff", "tonalRamp": ["#ffffff", "#FAFAFA", "#F7F7F7", "#F0F0F0", "#E7E7E7", "#CFCFCF", "#9E9E9E", "#737373"] },
+      "surface-inset-bg": { "role": "neutral", "displayName": "Surface Inset", "canonical": "#F0F0F0", "tonalRamp": ["#F0F0F0", "#E7E7E7", "#CFCFCF", "#9E9E9E", "#FAFAFA", "#F7F7F7", "#ffffff", "#242424"] },
+      "inverse-bg": { "role": "neutral", "displayName": "Inverse Surface", "canonical": "#363636", "tonalRamp": ["#363636", "#242424", "#171717", "#5C5C5C", "#737373", "#9E9E9E", "#CFCFCF", "#E7E7E7"] },
+      "destructive": { "role": "error", "displayName": "Destructive Red", "canonical": "#EC2222", "tonalRamp": ["#EC2222", "#C91313", "#A40E0E", "#7E0707", "#F13636", "#ED4E4E", "#F88C86", "#FEB9B3"] },
+      "success": { "role": "success", "displayName": "Success Green", "canonical": "#10A861", "tonalRamp": ["#10A861", "#078C52", "#05603A", "#054F31", "#12B76A", "#32D583", "#6CE9A6", "#A6F4C5"] },
+      "warning": { "role": "warning", "displayName": "Warning Yellow", "canonical": "#DC6803", "tonalRamp": ["#DC6803", "#B54708", "#93370D", "#7A2E0E", "#F79009", "#FDB022", "#FEC84B", "#FEDF89"] },
+      "gray-900": { "role": "neutral", "displayName": "Gray 900", "canonical": "#171717", "tonalRamp": ["#171717", "#242424", "#363636", "#5C5C5C", "#737373", "#9E9E9E", "#CFCFCF", "#E7E7E7"] },
+      "gray-800": { "role": "neutral", "displayName": "Gray 800", "canonical": "#242424", "tonalRamp": ["#242424", "#171717", "#363636", "#5C5C5C", "#737373", "#9E9E9E", "#CFCFCF", "#E7E7E7"] },
+      "gray-700": { "role": "neutral", "displayName": "Gray 700", "canonical": "#363636", "tonalRamp": ["#363636", "#242424", "#171717", "#5C5C5C", "#737373", "#9E9E9E", "#CFCFCF", "#E7E7E7"] },
+      "gray-600": { "role": "neutral", "displayName": "Gray 600", "canonical": "#5C5C5C", "tonalRamp": ["#5C5C5C", "#363636", "#242424", "#171717", "#737373", "#9E9E9E", "#CFCFCF", "#E7E7E7"] },
+      "gray-500": { "role": "neutral", "displayName": "Gray 500", "canonical": "#737373", "tonalRamp": ["#737373", "#5C5C5C", "#363636", "#242424", "#9E9E9E", "#CFCFCF", "#E7E7E7", "#F0F0F0"] },
+      "gray-400": { "role": "neutral", "displayName": "Gray 400", "canonical": "#9E9E9E", "tonalRamp": ["#9E9E9E", "#737373", "#5C5C5C", "#363636", "#CFCFCF", "#E7E7E7", "#F0F0F0", "#FAFAFA"] },
+      "gray-300": { "role": "neutral", "displayName": "Gray 300", "canonical": "#CFCFCF", "tonalRamp": ["#CFCFCF", "#9E9E9E", "#737373", "#5C5C5C", "#E7E7E7", "#F0F0F0", "#FAFAFA", "#ffffff"] },
+      "gray-200": { "role": "neutral", "displayName": "Gray 200", "canonical": "#E7E7E7", "tonalRamp": ["#E7E7E7", "#CFCFCF", "#9E9E9E", "#737373", "#F0F0F0", "#FAFAFA", "#ffffff", "#242424"] },
+      "gray-100": { "role": "neutral", "displayName": "Gray 100", "canonical": "#F0F0F0", "tonalRamp": ["#F0F0F0", "#E7E7E7", "#CFCFCF", "#9E9E9E", "#FAFAFA", "#F7F7F7", "#ffffff", "#242424"] },
+      "gray-50": { "role": "neutral", "displayName": "Gray 50", "canonical": "#F7F7F7", "tonalRamp": ["#F7F7F7", "#F0F0F0", "#E7E7E7", "#CFCFCF", "#FAFAFA", "#ffffff", "#242424", "#363636"] },
+      "gray-25": { "role": "neutral", "displayName": "Gray 25", "canonical": "#FAFAFA", "tonalRamp": ["#FAFAFA", "#F7F7F7", "#F0F0F0", "#E7E7E7", "#ffffff", "#CFCFCF", "#9E9E9E", "#737373"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Dashboard welcome messages, page titles. Sets the tone for the surface." },
+      "title": { "displayName": "Title", "purpose": "Button labels, card titles, navigation items, table headers. The most common heading." },
+      "body": { "displayName": "Body", "purpose": "Primary reading text, transaction descriptions, paragraphs, table cells. The default size." },
+      "label": { "displayName": "Label", "purpose": "Form labels, field descriptions, metadata, timestamps." },
+      "mono": { "displayName": "Mono", "purpose": "Financial figures, code snippets, identifiers, transaction IDs." }
+    },
+    "shadows": [
+      { "name": "shadow-xs", "value": "0px 1px 2px 0px rgba(11,11,11,0.06), 0px 0px 0px 1px rgba(11,11,11,0.03)", "purpose": "Default container boundary. The structural minimum." },
+      { "name": "shadow-sm", "value": "0px 1px 6px 0px rgba(11,11,11,0.06), 0px 0px 0px 1px rgba(11,11,11,0.03)", "purpose": "Slightly lifted containers. Hovered cards." },
+      { "name": "shadow-md", "value": "0px 4px 8px -2px rgba(11,11,11,0.06), 0px 0px 0px 1px rgba(11,11,11,0.03)", "purpose": "Dropdown menus, popovers, dialogs." },
+      { "name": "shadow-lg", "value": "0px 12px 16px -4px rgba(11,11,11,0.06), 0px 0px 0px 1px rgba(11,11,11,0.03)", "purpose": "Large modals, full-screen drawers." },
+      { "name": "shadow-xl", "value": "0px 20px 24px -4px rgba(11,11,11,0.06), 0px 0px 0px 1px rgba(11,11,11,0.03)", "purpose": "Maximum elevation. Reserved for the most prominent overlays." }
+    ],
+    "motion": [
+      { "name": "duration-default", "value": "200ms", "purpose": "Default state transition duration (hover, focus)." },
+      { "name": "duration-slow", "value": "300ms", "purpose": "Slower transitions (form field focus, toggle switch)." },
+      { "name": "ease-standard", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Default easing for state transitions." },
+      { "name": "ease-in-out", "value": "cubic-bezier(0.4, 0, 0.2, 1)", "purpose": "Toggle thumb slide easing." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The primary call-to-action button. Dark background, white text. Used for the most important action on a surface.",
+      "html": "<button class=\"ds-btn-primary\">Save Changes</button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 4px; padding: 12px 16px; background: #363636; color: #ffffff; font-family: 'Geist', system-ui, sans-serif; font-size: 14px; font-weight: 500; line-height: 1.5; border: none; border-radius: 10px; cursor: pointer; white-space: nowrap; transition: background 200ms; } .ds-btn-primary:hover { background: #242424; } .ds-btn-primary:focus-visible { outline: 2px solid #171717; outline-offset: 2px; } .ds-btn-primary:disabled { background: #737373; cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Secondary action button. Light background, dark text. Companion to the primary button.",
+      "html": "<button class=\"ds-btn-secondary\">Cancel</button>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; gap: 4px; padding: 12px 16px; background: #F7F7F7; color: #171717; font-family: 'Geist', system-ui, sans-serif; font-size: 14px; font-weight: 500; line-height: 1.5; border: none; border-radius: 10px; cursor: pointer; white-space: nowrap; transition: background 200ms; } .ds-btn-secondary:hover { background: #F0F0F0; } .ds-btn-secondary:focus-visible { outline: 2px solid #171717; outline-offset: 2px; }"
+    },
+    {
+      "name": "Destructive Button",
+      "kind": "button",
+      "refersTo": "button-destructive",
+      "description": "Destructive action button. Red background, white text. Used only for irreversible actions.",
+      "html": "<button class=\"ds-btn-destructive\">Delete Account</button>",
+      "css": ".ds-btn-destructive { display: inline-flex; align-items: center; gap: 4px; padding: 12px 16px; background: #EC2222; color: #ffffff; font-family: 'Geist', system-ui, sans-serif; font-size: 14px; font-weight: 500; line-height: 1.5; border: none; border-radius: 10px; cursor: pointer; white-space: nowrap; transition: background 200ms; } .ds-btn-destructive:hover { background: #C91313; } .ds-btn-destructive:focus-visible { outline: 2px solid #171717; outline-offset: 2px; }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Outline button. Transparent with a subtle alpha border. For secondary actions in dense contexts.",
+      "html": "<button class=\"ds-btn-outline\">Filter</button>",
+      "css": ".ds-btn-outline { display: inline-flex; align-items: center; gap: 4px; padding: 12px 16px; background: transparent; color: #171717; font-family: 'Geist', system-ui, sans-serif; font-size: 14px; font-weight: 500; line-height: 1.5; border: 1px solid rgba(11,11,11,0.10); border-radius: 10px; cursor: pointer; white-space: nowrap; transition: background 200ms; } .ds-btn-outline:hover { background: #F0F0F0; } .ds-btn-outline:focus-visible { outline: 2px solid #171717; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Ghost button. No background or border at rest. For toolbars, menus, and inline actions.",
+      "html": "<button class=\"ds-btn-ghost\">Edit</button>",
+      "css": ".ds-btn-ghost { display: inline-flex; align-items: center; gap: 4px; padding: 12px 16px; background: transparent; color: #171717; font-family: 'Geist', system-ui, sans-serif; font-size: 14px; font-weight: 500; line-height: 1.5; border: none; border-radius: 10px; cursor: pointer; white-space: nowrap; transition: background 200ms; } .ds-btn-ghost:hover { background: #F0F0F0; } .ds-btn-ghost:focus-visible { outline: 2px solid #171717; outline-offset: 2px; }"
+    },
+    {
+      "name": "Form Input",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Standard text input field. Bordered, rounded, with a focus ring effect.",
+      "html": "<div class=\"ds-input-group\"><label class=\"ds-input-label\" for=\"demo-input\">Amount</label><input class=\"ds-input\" id=\"demo-input\" type=\"text\" placeholder=\"0.00\" value=\"\"></div>",
+      "css": ".ds-input-group { display: flex; flex-direction: column; gap: 4px; } .ds-input-label { font-family: 'Geist', system-ui, sans-serif; font-size: 12px; font-weight: 400; color: #737373; line-height: 1.5; } .ds-input { padding: 8px 12px; background: #ffffff; color: #171717; font-family: 'Geist', system-ui, sans-serif; font-size: 14px; font-weight: 400; line-height: 1.5; border: 1px solid rgba(11,11,11,0.10); border-radius: 8px; width: 100%; box-sizing: border-box; transition: all 300ms; outline: none; } .ds-input::placeholder { color: #9E9E9E; opacity: 0.5; } .ds-input:focus { border-color: rgba(11,11,11,0.10); box-shadow: 0 0 0 4px rgba(11,11,11,0.10); }"
+    },
+    {
+      "name": "Segmented Tabs",
+      "kind": "nav",
+      "refersTo": "tabs-nav",
+      "description": "Pill-style segmented control. The active tab lifts onto a white container with a subtle shadow.",
+      "html": "<div class=\"ds-tabs\"><button class=\"ds-tab-active\">Accounts</button><button class=\"ds-tab\">Budgets</button><button class=\"ds-tab\">Transactions</button></div>",
+      "css": ".ds-tabs { display: flex; background: #F0F0F0; padding: 4px; border-radius: 8px; gap: 0; } .ds-tab, .ds-tab-active { font-family: 'Geist', system-ui, sans-serif; font-size: 14px; font-weight: 500; line-height: 1.5; padding: 4px 8px; border: none; border-radius: 6px; cursor: pointer; white-space: nowrap; flex: 1; text-align: center; transition: background 200ms, color 200ms; } .ds-tab { background: transparent; color: #737373; } .ds-tab:hover { background: #E7E7E7; } .ds-tab-active { background: #ffffff; color: #171717; box-shadow: 0px 1px 2px 0px rgba(11,11,11,0.06); }"
+    },
+    {
+      "name": "Card Container",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Standard card container for charts, summaries, and grouped content.",
+      "html": "<div class=\"ds-card\"><div class=\"ds-card-header\">Net Worth</div><div class=\"ds-card-body\" style=\"height: 200px; display: flex; align-items: center; justify-content: center; color: #CFCFCF; font-family: 'Geist', system-ui, sans-serif; font-size: 14px;\">Chart Area</div></div>",
+      "css": ".ds-card { background: #ffffff; border-radius: 12px; padding: 16px; box-shadow: 0px 1px 2px 0px rgba(11,11,11,0.06), 0px 0px 0px 1px rgba(11,11,11,0.03); } .ds-card-header { font-family: 'Geist', system-ui, sans-serif; font-size: 14px; font-weight: 500; color: #171717; line-height: 1.5; margin-bottom: 4px; } .ds-card-body { font-family: 'Geist', system-ui, sans-serif; font-size: 14px; color: #171717; }"
+    },
+    {
+      "name": "Toggle Switch",
+      "kind": "custom",
+      "refersTo": "toggle-track",
+      "description": "Toggle switch. Green when checked, gray when unchecked. Smooth thumb animation.",
+      "html": "<label class=\"ds-toggle\"><input class=\"ds-toggle-input\" type=\"checkbox\"><div class=\"ds-toggle-track\"><div class=\"ds-toggle-thumb\"></div></div></label>",
+      "css": ".ds-toggle { display: inline-flex; align-items: center; cursor: pointer; } .ds-toggle-input { position: absolute; opacity: 0; width: 0; height: 0; } .ds-toggle-track { position: relative; width: 36px; height: 20px; background: #F0F0F0; border-radius: 9999px; transition: background 300ms; } .ds-toggle-thumb { position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; background: #ffffff; border-radius: 9999px; transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1); } .ds-toggle-input:checked + .ds-toggle-track { background: #10A861; } .ds-toggle-input:checked + .ds-toggle-track .ds-toggle-thumb { transform: translateX(16px); } .ds-toggle-input:disabled + .ds-toggle-track { opacity: 0.7; cursor: not-allowed; }"
+    },
+    {
+      "name": "Info Alert",
+      "kind": "custom",
+      "refersTo": "alert-info",
+      "description": "Information alert. Blue tinted background with matching border and icon.",
+      "html": "<div class=\"ds-alert-info\"><svg class=\"ds-alert-icon\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#175CD3\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><path d=\"M12 16v-4\"/><path d=\"M12 8h.01\"/></svg><span class=\"ds-alert-text\">Your trial ends in 7 days.</span></div>",
+      "css": ".ds-alert-info { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: #EFF8FF; border: 1px solid #D1E9FF; border-radius: 8px; } .ds-alert-icon { flex-shrink: 0; margin-top: 1px; } .ds-alert-text { font-family: 'Geist', system-ui, sans-serif; font-size: 14px; font-weight: 400; color: #175CD3; line-height: 1.5; }"
+    },
+    {
+      "name": "Success Alert",
+      "kind": "custom",
+      "refersTo": "alert-success",
+      "description": "Success alert. Green tinted background with matching border and icon.",
+      "html": "<div class=\"ds-alert-success\"><svg class=\"ds-alert-icon\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#078C52\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M22 11.08V12a10 10 0 1 1-5.93-9.14\"/><polyline points=\"22 4 12 14.01 9 11.01\"/></svg><span class=\"ds-alert-text\">Account synced successfully.</span></div>",
+      "css": ".ds-alert-success { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: #ECFDF3; border: 1px solid #D1FADF; border-radius: 8px; } .ds-alert-icon { flex-shrink: 0; margin-top: 1px; } .ds-alert-text { font-family: 'Geist', system-ui, sans-serif; font-size: 14px; font-weight: 400; color: #078C52; line-height: 1.5; }"
+    },
+    {
+      "name": "Warning Alert",
+      "kind": "custom",
+      "refersTo": "alert-warning",
+      "description": "Warning alert. Yellow tinted background with matching border and icon.",
+      "html": "<div class=\"ds-alert-warning\"><svg class=\"ds-alert-icon\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#B54708\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z\"/><line x1=\"12\" y1=\"9\" x2=\"12\" y2=\"13\"/><line x1=\"12\" y1=\"17\" x2=\"12.01\" y2=\"17\"/></svg><span class=\"ds-alert-text\">Some accounts need attention.</span></div>",
+      "css": ".ds-alert-warning { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: #FFFAEB; border: 1px solid #FEF0C7; border-radius: 8px; } .ds-alert-icon { flex-shrink: 0; margin-top: 1px; } .ds-alert-text { font-family: 'Geist', system-ui, sans-serif; font-size: 14px; font-weight: 400; color: #B54708; line-height: 1.5; }"
+    },
+    {
+      "name": "Destructive Alert",
+      "kind": "custom",
+      "refersTo": "alert-destructive",
+      "description": "Error/destructive alert. Red tinted background with matching border and icon.",
+      "html": "<div class=\"ds-alert-destructive\"><svg class=\"ds-alert-icon\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#C91313\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"12\" cy=\"12\" r=\"10\"/><line x1=\"15\" y1=\"9\" x2=\"9\" y2=\"15\"/><line x1=\"9\" y1=\"9\" x2=\"15\" y2=\"15\"/></svg><span class=\"ds-alert-text\">Failed to sync account. Please try again.</span></div>",
+      "css": ".ds-alert-destructive { display: flex; align-items: flex-start; gap: 12px; padding: 16px; background: #FFF1F0; border: 1px solid #FFDEDB; border-radius: 8px; } .ds-alert-icon { flex-shrink: 0; margin-top: 1px; } .ds-alert-text { font-family: 'Geist', system-ui, sans-serif; font-size: 14px; font-weight: 400; color: #C91313; line-height: 1.5; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Financial Cockpit",
+    "overview": "Maybe is a measured and professional financial operating system. Like a pilot's instrument panel, every pixel has a job — the interface is a calm, trustworthy environment where complex financial data is organized with precision and clarity. The warm-leaning neutral palette brings a human touch to what could otherwise be cold numbers, making the precision feel approachable rather than clinical.\n\nThe system is intentionally restrained. The monochrome gray foundation is the discipline: color appears only when the numbers demand attention — red for losses, green for gains, yellow for warnings. This makes every color event meaningful and impossible to miss. Tonal layering (surface → container → inset) creates depth without shadows, keeping the interface flat, clean, and scannable.\n\nDensity balances information richness with breathing room. Charts and data visualizations are the primary visual element, not decorative UI. The design recedes so the data leads.",
+    "keyCharacteristics": [
+      "Warm-leaning neutral palette with precise tonal layering",
+      "Color is reserved for semantic meaning only",
+      "Flat surfaces with structural 1px alpha borders",
+      "Geist typeface for a modern, legible, slightly warm sans-serif voice",
+      "Rounded corners (8–12px) soften the precision without sacrificing professionalism",
+      "Dark mode is a first-class citizen with fully inverted tonal roles"
+    ],
+    "rules": [
+      { "name": "The One-Voice Rule", "body": "The gray palette speaks in one voice across the entire interface. Semantic color (red, green, yellow, blue) is the only exception — and it is used on no more than 10% of any given screen. Color rarity is the point: when it appears, the user knows it means something.", "section": "colors" },
+      { "name": "The Warm-Not-Cold Rule", "body": "Gray tones lean warm, never blue-gray. This prevents the interface from feeling clinical or corporate. The warmth is subtle — barely perceptible in isolation — but unmistakable in aggregate.", "section": "colors" },
+      { "name": "The Single-Size Rule", "body": "The system uses a compact type scale — display, title, body, and label. No headline, no massive hero text. The app is an operating tool, not a marketing page; typographic hierarchy is about scanability, not drama.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat at rest. Shadows appear only as a structural affordance (containers against their background) or as a response to state (hover, focus). No decorative shadows.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use the gray palette as the primary voice of the interface. Color is for semantic meaning only.",
+      "Do use tonal layering (surface → container → inset) to create hierarchy. Prefer background shifts over borders or shadows.",
+      "Do use the 1px alpha border as a structural line on all elevated containers. It defines the boundary without adding a new color.",
+      "Do keep button labels in font-medium with whitespace-nowrap. Avoid wrapping text in buttons.",
+      "Do use the largest corner radius that fits the element — 12px for cards, 8px for buttons, 6px for small controls.",
+      "Do maintain the warm-leaning character of the gray tones. Avoid blue-gray or cool-gray substitutions.",
+      "Do use semantic color consistently: red for negative, green for positive, yellow for warnings, blue for links/info."
+    ],
+    "donts": [
+      "Don't use color decoratively. Every color application must carry meaning.",
+      "Don't add shadows to surfaces at rest. The structural 1px border is sufficient.",
+      "Don't use pure black (#000) for text or surfaces. The palette's warm black (#171717) is the darkest tone.",
+      "Don't introduce additional typefaces beyond the Geist family. The system uses Geist and Geist Mono exclusively.",
+      "Don't use filled/heavy button styles for secondary actions. Reserve primary fills for the most important action per surface.",
+      "Don't mix corner radius languages. All rounded corners within the same size tier should use the same radius.",
+      "Don't create decorative illustrations or iconography that competes with data. The data is the visual."
+    ]
+  }
+}
