@@ -11,7 +11,7 @@
             <span>
               <%= account.name %>
             </span>
-            <span class="text-red-500 animate-pulse">
+            <span class="text-destructive opacity-50">
               (deletion in progress...)
             </span>
           </p>
@@ -24,7 +24,7 @@
       </div>
 
       <% unless account.pending_deletion? %>
-        <%= link_to edit_account_path(account, return_to: return_to), data: { turbo_frame: :modal }, class: "group-hover/account:flex hidden hover:opacity-80 items-center justify-center" do %>
+        <%= link_to edit_account_path(account, return_to: return_to), data: { turbo_frame: :modal }, class: "group-hover/account:flex hidden hover:bg-surface-hover items-center justify-center rounded-lg" do %>
           <%= icon("pencil-line", size: "sm") %>
         <% end %>
       <% end %>
@@ -33,7 +33,7 @@
       <% if account.draft? %>
         <!-- Balance hidden for draft accounts -->
       <% elsif account.syncing? %>
-        <div class="w-16 h-6 bg-loader rounded-full animate-pulse"></div>
+        <div class="w-16 h-6 bg-loader rounded-full"></div>
       <% else %>
         <p class="text-sm font-medium <%= account.active? ? "text-primary" : "text-subdued" %>">
           <%= format_money account.balance_money %>

@@ -37,19 +37,19 @@ class DS::Buttonish < DesignSystemComponent
   SIZES = {
     sm: {
       container_classes: "px-2 py-1",
-      icon_container_classes: "inline-flex items-center justify-center w-8 h-8",
+      icon_container_classes: "inline-flex items-center justify-center w-8 h-8 min-w-[44px] min-h-[44px]",
       radius_classes: "rounded-md",
       text_classes: "text-sm"
     },
     md: {
       container_classes: "px-3 py-2",
-      icon_container_classes: "inline-flex items-center justify-center w-9 h-9",
+      icon_container_classes: "inline-flex items-center justify-center w-9 h-9 min-w-[44px] min-h-[44px]",
       radius_classes: "rounded-lg",
       text_classes: "text-sm"
     },
     lg: {
       container_classes: "px-4 py-3",
-      icon_container_classes: "inline-flex items-center justify-center w-10 h-10",
+      icon_container_classes: "inline-flex items-center justify-center w-10 h-10 min-w-[44px] min-h-[44px]",
       radius_classes: "rounded-xl",
       text_classes: "text-base"
     }

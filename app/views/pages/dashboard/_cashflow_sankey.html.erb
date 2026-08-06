@@ -10,7 +10,7 @@
                 Period.as_options,
                 { selected: period.key },
                 data: { "auto-submit-form-target": "auto" },
-                class: "bg-container border border-secondary font-medium rounded-lg px-3 py-2 text-sm pr-7 cursor-pointer text-primary focus:outline-hidden focus:ring-0" %>
+                class: "bg-container border border-secondary font-medium rounded-lg px-3 py-2 text-sm pr-7 cursor-pointer text-primary focus-visible:outline-2 focus-visible:outline-gray-900 focus-visible:outline-offset-2" %>
     <% end %>
   </div>
 
@@ -23,7 +23,7 @@
         class="w-full h-full"></div>
     </div>
   <% else %>
-    <div class="h-[300px] lg:h-[340px] bg-container py-4 flex flex-col items-center justify-center">
+    <div class="min-h-[300px] lg:min-h-[340px] bg-container py-4 flex flex-col items-center justify-center">
       <div class="space-y-3 text-center flex flex-col items-center">
         <%= render DS::FilledIcon.new(
           variant: :container,

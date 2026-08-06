@@ -9,7 +9,7 @@
           <p class="text-sm text-secondary font-medium"><%= t(".title") %></p>
         </div>
 
-        <p class="text-primary -space-x-0.5 text-3xl font-medium <%= "animate-pulse" if balance_sheet.syncing? %>">
+        <p class="text-primary -space-x-0.5 text-3xl font-medium <%= "opacity-50" if balance_sheet.syncing? %>">
           <%= series.trend.current.format %>
         </p>
 
@@ -26,7 +26,7 @@
                     Period.as_options,
                     { selected: period.key },
                     data: { "auto-submit-form-target": "auto" },
-                    class: "bg-container border border-secondary font-medium rounded-lg px-3 py-2 text-sm pr-7 cursor-pointer text-primary focus:outline-hidden focus:ring-0" %>
+                    class: "bg-container border border-secondary font-medium rounded-lg px-3 py-2 text-sm pr-7 cursor-pointer text-primary focus-visible:outline-2 focus-visible:outline-gray-900 focus-visible:outline-offset-2" %>
     <% end %>
   </div>
 

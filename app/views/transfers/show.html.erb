@@ -40,7 +40,7 @@
 
           <dl class="flex items-center gap-2 justify-between">
             <dt class="text-secondary">Amount</dt>
-            <dd class="font-medium text-red-500"><%= format_money @transfer.outflow_transaction.entry.amount_money * -1 %></dd>
+            <dd class="font-medium text-destructive"><%= format_money @transfer.outflow_transaction.entry.amount_money * -1 %></dd>
           </dl>
         </div>
 
@@ -62,7 +62,7 @@
 
           <dl class="flex items-center gap-2 justify-between">
             <dt class="text-secondary">Amount</dt>
-            <dd class="font-medium text-green-500">+<%= format_money @transfer.inflow_transaction.entry.amount_money * -1 %></dd>
+            <dd class="font-medium text-success">+<%= format_money @transfer.inflow_transaction.entry.amount_money * -1 %></dd>
           </dl>
         </div>
       </div>
@@ -94,7 +94,7 @@
           <%= button_to t(".delete"),
                 transfer_path(@transfer),
                 method: :delete,
-                class:  "rounded-lg px-3 py-2 whitespace-nowrap text-red-500 text-sm
+                class:  "rounded-lg px-3 py-2 whitespace-nowrap text-destructive text-sm
                           font-medium border border-secondary",
                 data:   { turbo_confirm: true, turbo_frame: "_top" } %>
         </div>

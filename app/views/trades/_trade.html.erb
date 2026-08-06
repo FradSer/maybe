@@ -4,7 +4,7 @@
 
 <%= turbo_frame_tag dom_id(entry) do %>
   <%= turbo_frame_tag dom_id(trade) do %>
-    <div class="grid grid-cols-12 items-center <%= entry.excluded ? "text-gray-400 bg-gray-25" : "text-primary" %> text-sm font-medium p-4">
+    <div class="grid grid-cols-12 items-center <%= entry.excluded ? "text-subdued bg-surface" : "text-primary" %> text-sm font-medium p-4">
       <div class="col-span-8 flex items-center gap-4">
         <%= check_box_tag dom_id(entry, "selection"),
                         class: "checkbox checkbox--light",
@@ -36,7 +36,7 @@
       <div class="col-span-2 justify-self-end font-medium text-sm">
         <%= content_tag :p,
                     format_money(-entry.amount_money),
-                    class: ["text-green-600": entry.amount.negative?] %>
+                    class: ["text-success": entry.amount.negative?] %>
       </div>
     </div>
   <% end %>
