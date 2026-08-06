@@ -119,6 +119,14 @@
 
           <p class="text-primary text-sm font-medium mb-1 mt-4">No <%= classification_group.name %> yet</p>
           <p class="text-secondary text-sm text-center"><%= "Add your #{classification_group.name} accounts to see a full breakdown" %></p>
+          <%= render DS::Link.new(
+            text: "New account",
+            icon: "plus",
+            href: new_account_path(classification: classification_group.name.downcase),
+            frame: :modal,
+            variant: "secondary",
+            class: "mt-2"
+          ) %>
         </div>
       <% end %>
     </div>

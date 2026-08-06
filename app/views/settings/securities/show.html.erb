@@ -27,7 +27,7 @@
             href: disable_mfa_path,
             method: :delete,
             confirm: CustomConfirm.new(
-              title: t(".disable_mfa_confirm"),
+              title: "Disable two-factor authentication?",
               body: t(".disable_mfa_confirm"),
               btn_text: t(".disable_mfa"),
               destructive: true

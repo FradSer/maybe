@@ -5,7 +5,7 @@
     <%= render "settings/user_avatar_field", form: form, user: @user %>
 
     <div>
-      <%= form.email_field :email, placeholder: t(".email"), label: t(".email") %>
+      <%= form.email_field :email, placeholder: "you@example.com", label: t(".email") %>
 
       <% if @user.unconfirmed_email.present? %>
         <p class="mt-2 text-sm text-secondary">
@@ -14,8 +14,8 @@
       <% end %>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-        <%= form.text_field :first_name, placeholder: t(".first_name"), label: t(".first_name") %>
-        <%= form.text_field :last_name, placeholder: t(".last_name"), label: t(".last_name") %>
+        <%= form.text_field :first_name, placeholder: "Jane", label: t(".first_name") %>
+        <%= form.text_field :last_name, placeholder: "Doe", label: t(".last_name") %>
       </div>
 
       <div class="flex justify-end mt-4">
