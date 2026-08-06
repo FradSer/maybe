@@ -10,6 +10,76 @@
 
 Maybe is a fully working personal finance app that can be [self hosted with Docker](docs/hosting/docker.md).
 
+## A2A Agent Protocol
+
+This fork implements the [A2A (Agent-to-Agent) protocol v1.0](https://github.com/google/A2A) over JSON-RPC 2.0, allowing external AI agents to interact with your financial data.
+
+### Discovery
+
+The Agent Card is served at:
+```
+GET /.well-known/agent-card
+```
+
+### Authentication
+
+A2A requests require an API Key in the `X-Api-Key` header. Create one via the web UI (`Settings → API Keys`) or Rails console:
+
+```sh
+docker exec maybe bin/rails runner "
+key = SecureRandom.hex(32)
+user = User.find_by(email: 'your@email.com')
+api_key = user.api_keys.build(name: 'A2A Client', source: 'web', scopes: ['read_write'], key: key)
+api_key.save!
+puts \"API Key: #{key}\"
+"
+```
+
+### Endpoint
+
+```
+POST /api/v1/a2a
+```
+
+### Supported Methods
+
+| Method | Description | Required Scope |
+|--------|-------------|----------------|
+| `message/send` | Send a message to start or continue a task | `write` |
+| `tasks/get` | Retrieve task status by `taskId` | `read` |
+| `tasks/cancel` | Cancel an in-flight task | `write` |
+
+### Example Usage
+
+```sh
+curl -s -X POST http://localhost:3000/api/v1/a2a \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: <your-api-key>" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": "1",
+    "method": "message/send",
+    "params": {
+      "message": {
+        "parts": [{"type": "text", "text": "What is my account balance?"}]
+      }
+    }
+  }'
+```
+
+### Task States
+
+- `working` — Awaiting assistant response
+- `completed` — Assistant response is ready
+- `failed` — Error occurred
+- `canceled` — Task was canceled
+
+### Environment
+
+The A2A endpoint URL in the Agent Card is derived from the `APP_DOMAIN` environment variable. Ensure it matches your deployment URL (e.g., `http://10.10.0.195:3006` for self-hosted instances).
+
+---
+
 ## Forking and Attribution
 
 This repo is no longer maintained. You’re free to fork it under the AGPLv3. To stay compliant and avoid trademark issues:
