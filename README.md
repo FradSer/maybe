@@ -51,7 +51,10 @@ POST /api/v1/a2a
 
 ### Example Usage
 
+`message/send` is **asynchronous** — it returns immediately with `state: "working"`, then a Sidekiq background job (`AssistantResponseJob`) processes the request via LLM. Poll with `tasks/get` using the returned `taskId` (the `chat.id` UUID) to retrieve the completed response.
+
 ```sh
+# 1. Send a message → returns taskId, state: "working"
 curl -s -X POST http://localhost:3000/api/v1/a2a \
   -H "Content-Type: application/json" \
   -H "X-Api-Key: <your-api-key>" \
@@ -65,7 +68,22 @@ curl -s -X POST http://localhost:3000/api/v1/a2a \
       }
     }
   }'
+
+# 2. Poll for result (replace <taskId> with the chat.id from step 1)
+curl -s -X POST http://localhost:3000/api/v1/a2a \
+  -H "Content-Type: application/json" \
+  -H "X-Api-Key: <your-api-key>" \
+  -d '{
+    "jsonrpc": "2.0",
+    "id": "2",
+    "method": "tasks/get",
+    "params": {
+      "taskId": "<chat-uuid>"
+    }
+  }'
 ```
+
+When `state` is `"completed"`, the response text is in `result.artifacts[0].parts[0].text`.
 
 ### Task States
 
