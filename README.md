@@ -41,56 +41,61 @@ puts \"API Key: #{key}\"
 POST /api/v1/a2a
 ```
 
-### Supported Methods
+### Supported Methods (A2A v1.0)
+
+This endpoint speaks the A2A **v1.0** wire format: PascalCase methods, presence-based text parts (`{ "text": "..." }`, no `type`/`kind`), uppercase task states (`TASK_STATE_COMPLETED`), and `id` params for Get/Cancel. Requests should carry an `A2A-Version: 1.0` header (a missing header is accepted as v1.0).
 
 | Method | Description | Required Scope |
 |--------|-------------|----------------|
-| `message/send` | Send a message to start or continue a task | `write` |
-| `tasks/get` | Retrieve task status by `taskId` | `read` |
-| `tasks/cancel` | Cancel an in-flight task | `write` |
+| `SendMessage` | Send a message to start or continue a task | `write` |
+| `GetTask` | Retrieve task status by `id` | `read` |
+| `CancelTask` | Cancel an in-flight task | `write` |
 
 ### Example Usage
 
-`message/send` is **asynchronous** — it returns immediately with `state: "working"`, then a Sidekiq background job (`AssistantResponseJob`) processes the request via LLM. Poll with `tasks/get` using the returned `taskId` (the `chat.id` UUID) to retrieve the completed response.
+`SendMessage` is **asynchronous** — it returns immediately with `TASK_STATE_WORKING`, then a Sidekiq background job (`AssistantResponseJob`) processes the request via LLM. Poll with `GetTask` using the returned `id` (the `chat.id` UUID) to retrieve the completed response.
 
 ```sh
-# 1. Send a message → returns taskId, state: "working"
+# 1. Send a message → returns id, TASK_STATE_WORKING
 curl -s -X POST http://localhost:3000/api/v1/a2a \
   -H "Content-Type: application/json" \
+  -H "A2A-Version: 1.0" \
   -H "X-Api-Key: <your-api-key>" \
   -d '{
     "jsonrpc": "2.0",
     "id": "1",
-    "method": "message/send",
+    "method": "SendMessage",
     "params": {
       "message": {
-        "parts": [{"type": "text", "text": "What is my account balance?"}]
+        "role": "ROLE_USER",
+        "parts": [{"text": "What is my account balance?"}]
       }
     }
   }'
 
-# 2. Poll for result (replace <taskId> with the chat.id from step 1)
+# 2. Poll for result (replace <id> with the chat.id from step 1)
 curl -s -X POST http://localhost:3000/api/v1/a2a \
   -H "Content-Type: application/json" \
+  -H "A2A-Version: 1.0" \
   -H "X-Api-Key: <your-api-key>" \
   -d '{
     "jsonrpc": "2.0",
     "id": "2",
-    "method": "tasks/get",
+    "method": "GetTask",
     "params": {
-      "taskId": "<chat-uuid>"
+      "id": "<chat-uuid>"
     }
   }'
 ```
 
-When `state` is `"completed"`, the response text is in `result.artifacts[0].parts[0].text`.
+When `state` is `TASK_STATE_COMPLETED`, the response text is in `result.artifacts[0].parts[0].text`.
 
-### Task States
+### Task States (v1.0 wire values)
 
-- `working` — Awaiting assistant response
-- `completed` — Assistant response is ready
-- `failed` — Error occurred
-- `canceled` — Task was canceled
+- `TASK_STATE_WORKING` — Awaiting assistant response
+- `TASK_STATE_COMPLETED` — Assistant response is ready
+- `TASK_STATE_FAILED` — Error occurred
+- `TASK_STATE_CANCELED` — Task was canceled
 
 ### Environment
 
