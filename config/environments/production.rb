@@ -41,6 +41,10 @@ Rails.application.configure do
   # config.action_cable.url = "wss://example.com/cable"
   # config.action_cable.allowed_request_origins = [ "http://example.com", /http:\/\/example.*/ ]
 
+  # Disable open redirect protection since the app runs behind a reverse proxy (GoDoxy)
+  # where the external host differs from the internal container host.
+  config.action_controller.raise_on_open_redirects = false
+
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
   config.force_ssl = ActiveModel::Type::Boolean.new.cast(ENV.fetch("RAILS_FORCE_SSL", true))
 
