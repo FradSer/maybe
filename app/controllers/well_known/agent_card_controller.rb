@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-# Public A2A discovery document served at /.well-known/agent-card
+# Public A2A discovery document served at /.well-known/agent-card (v1.0 card).
+# AgentMesh's endpoint verification fetches {interface-url}/.well-known/agent-card.json;
+# the route is aliased in config/routes.rb so both paths serve this card.
 class WellKnown::AgentCardController < ApplicationController
   skip_authentication
   skip_before_action :verify_authenticity_token
@@ -9,16 +11,23 @@ class WellKnown::AgentCardController < ApplicationController
     render json: {
       name: "Maybe Finance Agent",
       description: "Personal finance assistant for Maybe: answers questions about transactions, accounts, balance sheet, and income statement data.",
-      url: interface_url,
-      protocolVersion: "1.0",
-      capabilities: { streaming: false, pushNotifications: false, stateTransitionHistory: false },
+      version: "1.0.0",
+      supportedInterfaces: [
+        { url: interface_url, protocolBinding: "JSONRPC", protocolVersion: "1.0" }
+      ],
+      capabilities: { streaming: false, pushNotifications: false, extendedAgentCard: false },
+      securitySchemes: {
+        apiKey: { type: "apiKey", in: "header", name: "X-Api-Key" }
+      },
+      securityRequirements: [],
       skills: [
         { id: "GetTransactions", name: "GetTransactions", description: "Query transaction history across accounts" },
         { id: "GetAccounts", name: "GetAccounts", description: "List accounts and their balances" },
         { id: "GetBalanceSheet", name: "GetBalanceSheet", description: "Get the balance sheet for a date range" },
         { id: "GetIncomeStatement", name: "GetIncomeStatement", description: "Get the income statement for a date range" }
       ],
-      securitySchemes: [ { type: "apiKey", in: "header", name: "X-Api-Key" } ]
+      defaultInputModes: [ "application/json" ],
+      defaultOutputModes: [ "application/json" ]
     }
   end
 
