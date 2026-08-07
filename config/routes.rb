@@ -260,8 +260,11 @@ Rails.application.routes.draw do
     post "stripe"
   end
 
-  # A2A agent card (machine-readable discovery document)
+  # A2A agent card (machine-readable discovery document). AgentMesh's endpoint
+  # verification fetches {interface}/.well-known/agent-card.json, so the path
+  # is aliased to the same controller.
   get ".well-known/agent-card", to: "well_known/agent_card#show", as: :agent_card
+  get ".well-known/agent-card.json", to: "well_known/agent_card#show"
 
   get "redis-configuration-error", to: "pages#redis_configuration_error"
 
