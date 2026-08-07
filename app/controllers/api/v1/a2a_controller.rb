@@ -3,6 +3,13 @@
 # A2A protocol (v1.0) over JSON-RPC 2.0. Single dispatch endpoint; auth
 # (OAuth Bearer or X-Api-Key), rate limiting, and audit logging come from
 # Api::V1::BaseController. An A2A Task maps 1:1 to a Chat.
+#
+# v1.0 wire format:
+#   - PascalCase methods: SendMessage / GetTask / CancelTask
+#   - Task id params: GetTask/CancelTask use params.id (resource id)
+#   - Message parts are presence-based: { "text": "..." } (no kind/type)
+#   - TaskState serializes uppercase: TASK_STATE_COMPLETED etc.
+#   - Requests carry an A2A-Version: 1.0 header (missing is accepted as v1.0)
 class Api::V1::A2aController < Api::V1::BaseController
   # Rails raises this while parsing an invalid JSON body before the action runs
   rescue_from ActionDispatch::Http::Parameters::ParseError, with: :handle_json_parse_error
@@ -21,9 +28,9 @@ class Api::V1::A2aController < Api::V1::BaseController
     @a2a_notification = !payload.key?("id")
 
     case payload["method"]
-    when "message/send" then handle_message_send(payload["params"])
-    when "tasks/get" then handle_tasks_get(payload["params"])
-    when "tasks/cancel" then handle_tasks_cancel(payload["params"])
+    when "SendMessage" then handle_message_send(payload["params"])
+    when "GetTask" then handle_tasks_get(payload["params"])
+    when "CancelTask" then handle_tasks_cancel(payload["params"])
     else render_a2a_error(-32601, "Method not found: #{payload["method"]}")
     end
 
@@ -52,8 +59,10 @@ class Api::V1::A2aController < Api::V1::BaseController
         return render_a2a_error(-32602, "Invalid params: 'message' object is required")
       end
 
+      # v1.0: parts are presence-based -- a text part carries `text` directly
+      # (no `kind`/`type` discriminator). Accept a `type: "text"` legacy part too.
       text = Array(params.dig("message", "parts"))
-        .find { |part| part.is_a?(Hash) && part["type"] == "text" && part["text"].is_a?(String) && part["text"].present? }
+        .find { |part| part.is_a?(Hash) && part["text"].is_a?(String) && part["text"].present? }
         &.dig("text")
       return render_a2a_error(-32602, "Invalid params: message must contain a non-empty text part") if text.blank?
 
@@ -64,8 +73,12 @@ class Api::V1::A2aController < Api::V1::BaseController
     end
 
     def find_or_build_chat(params, text)
-      if params["taskId"].present?
-        chat = find_task(params["taskId"])
+      # v1.0: SendMessage continuation uses message.taskId (the Message carries
+      # the task id it belongs to). Accept message.taskId and a top-level
+      # params.taskId for compatibility with v0.2-style callers.
+      task_id = params.dig("message", "taskId").presence || params["taskId"].presence
+      if task_id.present?
+        chat = find_task(task_id)
         return unless chat
         UserMessage.create!(chat: chat, content: text, ai_model: Provider::Openai::MODELS.first)
         # Resume a canceled chat only after the message persists.
@@ -80,9 +93,11 @@ class Api::V1::A2aController < Api::V1::BaseController
       return unless authorize_scope!(:read)
       return if performed?
 
-      return render_a2a_error(-32602, "Invalid params: 'taskId' is required") unless params.is_a?(Hash) && params["taskId"].present?
+      # v1.0 GetTask uses params.id (the resource id).
+      task_id = params.is_a?(Hash) ? (params["id"].presence || params["taskId"].presence) : nil
+      return render_a2a_error(-32602, "Invalid params: 'id' is required") if task_id.blank?
 
-      chat = find_task(params["taskId"])
+      chat = find_task(task_id)
       return unless chat
 
       render_a2a_result(a2a_task(chat))
@@ -92,9 +107,11 @@ class Api::V1::A2aController < Api::V1::BaseController
       return unless authorize_scope!(:write)
       return if performed?
 
-      return render_a2a_error(-32602, "Invalid params: 'taskId' is required") unless params.is_a?(Hash) && params["taskId"].present?
+      # v1.0 CancelTask uses params.id (the resource id).
+      task_id = params.is_a?(Hash) ? (params["id"].presence || params["taskId"].presence) : nil
+      return render_a2a_error(-32602, "Invalid params: 'id' is required") if task_id.blank?
 
-      chat = find_task(params["taskId"])
+      chat = find_task(task_id)
       return unless chat
 
       chat.cancel!
@@ -112,12 +129,37 @@ class Api::V1::A2aController < Api::V1::BaseController
       chat
     end
 
+    # ─── v1.0 wire Task ────────────────────────────────────────────────────
+    # Maps the internal lowercase Chat state to the uppercase v1.0 TaskState,
+    # emits presence-based text parts, and marks the Task with an artifact for
+    # the completed assistant turn. No `kind` discriminator on the wire.
+
+    TASK_STATE_WIRE = {
+      "submitted" => "TASK_STATE_SUBMITTED",
+      "working" => "TASK_STATE_WORKING",
+      "completed" => "TASK_STATE_COMPLETED",
+      "failed" => "TASK_STATE_FAILED",
+      "canceled" => "TASK_STATE_CANCELED",
+      "input-required" => "TASK_STATE_INPUT_REQUIRED",
+      "auth-required" => "TASK_STATE_AUTH_REQUIRED",
+      "rejected" => "TASK_STATE_REJECTED"
+    }.freeze
+
+    def wire_state(state)
+      TASK_STATE_WIRE.fetch(state, "TASK_STATE_UNSPECIFIED")
+    end
+
     def a2a_task(chat)
       state, error_message = chat.a2a_status
-      status = { state: state, timestamp: chat.updated_at.iso8601 }
+      status = { state: wire_state(state), timestamp: chat.updated_at.iso8601 }
       status[:error] = { code: -32000, message: error_message } if error_message.present?
 
-      { id: chat.id, status: status, artifacts: a2a_artifacts(chat), metadata: { title: chat.title } }
+      {
+        id: chat.id,
+        status: status,
+        artifacts: a2a_artifacts(chat),
+        metadata: { title: chat.title }
+      }
     end
 
     def a2a_artifacts(chat)
@@ -129,7 +171,7 @@ class Api::V1::A2aController < Api::V1::BaseController
       last_assistant = chat.conversation_messages.ordered.last
       return [] unless last_assistant&.role == "assistant" && last_assistant.status == "complete"
 
-      [ { name: "assistant_message", parts: [ { type: "text", text: last_assistant.content.to_s } ] } ]
+      [ { name: "assistant_message", parts: [ { text: last_assistant.content.to_s } ] } ]
     end
 
     def render_a2a_result(task)

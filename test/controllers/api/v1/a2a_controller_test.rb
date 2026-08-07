@@ -69,7 +69,7 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     assert_equal "2.0", body["jsonrpc"]
     assert_equal 42, body["id"]
     task = body["result"]
-    assert_equal "working", task.dig("status", "state")
+    assert_equal "TASK_STATE_WORKING", task.dig("status", "state")
     assert_equal "What is my net worth?", UserMessage.find_by(chat_id: task["id"]).content
   end
 
@@ -97,7 +97,7 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :success
     task = JSON.parse(response.body)["result"]
-    assert_equal "completed", task.dig("status", "state")
+    assert_equal "TASK_STATE_COMPLETED", task.dig("status", "state")
     assert_equal 1, task["artifacts"].size
     assert_equal "assistant_message", task["artifacts"].first["name"]
     assert task["artifacts"].first.dig("parts", 0, "text").present?
@@ -109,7 +109,7 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     post a2a_path, params: tasks_get_rpc(chat.id), headers: json_headers.merge(@api_key_header)
 
     task = JSON.parse(response.body)["result"]
-    assert_equal "working", task.dig("status", "state")
+    assert_equal "TASK_STATE_WORKING", task.dig("status", "state")
     assert_empty task["artifacts"]
   end
 
@@ -120,7 +120,7 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     post a2a_path, params: tasks_get_rpc(chat.id), headers: json_headers.merge(@api_key_header)
 
     task = JSON.parse(response.body)["result"]
-    assert_equal "failed", task.dig("status", "state")
+    assert_equal "TASK_STATE_FAILED", task.dig("status", "state")
     assert_equal "boom", task.dig("status", "error", "message")
   end
 
@@ -132,7 +132,7 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     post a2a_path, params: tasks_get_rpc(chat.id), headers: json_headers.merge(@api_key_header)
 
     task = JSON.parse(response.body)["result"]
-    assert_equal "canceled", task.dig("status", "state")
+    assert_equal "TASK_STATE_CANCELED", task.dig("status", "state")
   end
 
   test "canceled task delivers no artifacts" do
@@ -158,7 +158,7 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     post a2a_path, params: tasks_cancel_rpc(chat.id), headers: json_headers.merge(@api_key_header)
 
     assert_response :success
-    assert_equal "canceled", JSON.parse(response.body).dig("result", "status", "state")
+    assert_equal "TASK_STATE_CANCELED", JSON.parse(response.body).dig("result", "status", "state")
     assert_equal last_user.id.to_s, chat.reload.a2a_state
   end
 
@@ -168,7 +168,7 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     post a2a_path, params: tasks_cancel_rpc(chat.id), headers: json_headers.merge(@api_key_header)
 
     assert_response :success
-    assert_equal "completed", JSON.parse(response.body).dig("result", "status", "state")
+    assert_equal "TASK_STATE_COMPLETED", JSON.parse(response.body).dig("result", "status", "state")
     assert_nil chat.reload.a2a_state
   end
 
@@ -180,7 +180,7 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     post a2a_path, params: tasks_cancel_rpc(chat.id), headers: json_headers.merge(@api_key_header)
 
     assert_response :success
-    assert_equal "canceled", JSON.parse(response.body).dig("result", "status", "state")
+    assert_equal "TASK_STATE_CANCELED", JSON.parse(response.body).dig("result", "status", "state")
     assert_equal last_user.id.to_s, chat.reload.a2a_state
   end
 
@@ -214,7 +214,7 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     # The chat is resumed in status terms (no longer reported canceled), and
     # the marker persists so the canceled turn's queued job stays suppressed.
-    assert_equal "working", JSON.parse(response.body).dig("result", "status", "state")
+    assert_equal "TASK_STATE_WORKING", JSON.parse(response.body).dig("result", "status", "state")
     assert_equal "canceled", chat.reload.a2a_state
   end
 
@@ -229,8 +229,8 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
   test "returns TaskNotFoundError for malformed task id" do
     [ "garbage", "123", [ "x" ], { "id" => "x" } ].each do |bad_id|
       rpc = JSON.generate({
-        jsonrpc: "2.0", id: 1, method: "tasks/get",
-        params: { "taskId" => bad_id }
+        jsonrpc: "2.0", id: 1, method: "GetTask",
+        params: { "id" => bad_id }
       })
       post a2a_path, params: rpc, headers: json_headers.merge(@api_key_header)
 
@@ -240,7 +240,7 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "notification gets no error response body" do
-    rpc = JSON.generate({ jsonrpc: "2.0", method: "tasks/get", params: {} })
+    rpc = JSON.generate({ jsonrpc: "2.0", method: "GetTask", params: {} })
     post a2a_path, params: rpc, headers: json_headers.merge(@api_key_header)
 
     assert_response :no_content
@@ -248,7 +248,7 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "null id is treated as a request, not a notification" do
-    post a2a_path, params: JSON.generate({ jsonrpc: "2.0", id: nil, method: "tasks/get", params: {} }), headers: json_headers.merge(@api_key_header)
+    post a2a_path, params: JSON.generate({ jsonrpc: "2.0", id: nil, method: "GetTask", params: {} }), headers: json_headers.merge(@api_key_header)
 
     assert_response :success
     assert_nil JSON.parse(response.body)["id"]
@@ -280,22 +280,22 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "returns invalid request when jsonrpc is missing" do
-    post a2a_path, params: JSON.generate({ id: 1, method: "tasks/get", params: {} }), headers: json_headers.merge(@api_key_header)
+    post a2a_path, params: JSON.generate({ id: 1, method: "GetTask", params: {} }), headers: json_headers.merge(@api_key_header)
 
     assert_response :bad_request
     assert_equal(-32600, JSON.parse(response.body).dig("error", "code"))
   end
 
   test "returns invalid params when message is missing" do
-    post a2a_path, params: JSON.generate({ jsonrpc: "2.0", id: 1, method: "message/send", params: {} }), headers: json_headers.merge(@api_key_header)
+    post a2a_path, params: JSON.generate({ jsonrpc: "2.0", id: 1, method: "SendMessage", params: {} }), headers: json_headers.merge(@api_key_header)
 
     assert_equal(-32602, JSON.parse(response.body).dig("error", "code"))
   end
 
   test "returns invalid params for empty text part" do
     rpc = JSON.generate({
-      jsonrpc: "2.0", id: 1, method: "message/send",
-      params: { "message" => { "role" => "user", "parts" => [ { "type" => "text", "text" => "" } ] } }
+      jsonrpc: "2.0", id: 1, method: "SendMessage",
+      params: { "message" => { "role" => "ROLE_USER", "parts" => [ { "text" => "" } ] } }
     })
     post a2a_path, params: rpc, headers: json_headers.merge(@api_key_header)
 
@@ -305,8 +305,8 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
   test "returns invalid params for non-hash parts elements" do
     [ [ 123 ], [ nil ], { "type" => "text" } ].each do |bad_parts|
       rpc = JSON.generate({
-        jsonrpc: "2.0", id: 1, method: "message/send",
-        params: { "message" => { "role" => "user", "parts" => bad_parts } }
+        jsonrpc: "2.0", id: 1, method: "SendMessage",
+        params: { "message" => { "role" => "ROLE_USER", "parts" => bad_parts } }
       })
       post a2a_path, params: rpc, headers: json_headers.merge(@api_key_header)
 
@@ -318,8 +318,8 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
   test "returns invalid params for non-string text values" do
     [ 123, [ "x" ], { "text" => "x" }, true ].each do |bad_text|
       rpc = JSON.generate({
-        jsonrpc: "2.0", id: 1, method: "message/send",
-        params: { "message" => { "role" => "user", "parts" => [ { "type" => "text", "text" => bad_text } ] } }
+        jsonrpc: "2.0", id: 1, method: "SendMessage",
+        params: { "message" => { "role" => "ROLE_USER", "parts" => [ { "text" => bad_text } ] } }
       })
       post a2a_path, params: rpc, headers: json_headers.merge(@api_key_header)
 
@@ -329,7 +329,7 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "returns invalid params when taskId is missing" do
-    post a2a_path, params: JSON.generate({ jsonrpc: "2.0", id: 1, method: "tasks/get", params: {} }), headers: json_headers.merge(@api_key_header)
+    post a2a_path, params: JSON.generate({ jsonrpc: "2.0", id: 1, method: "GetTask", params: {} }), headers: json_headers.merge(@api_key_header)
 
     assert_equal(-32602, JSON.parse(response.body).dig("error", "code"))
   end
@@ -337,8 +337,8 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
   test "notification requests get no response body" do
     assert_difference "Chat.count" do
       post a2a_path, params: JSON.generate({
-        jsonrpc: "2.0", method: "message/send",
-        params: { "message" => { "role" => "user", "parts" => [ { "type" => "text", "text" => "Fire and forget" } ] } }
+        jsonrpc: "2.0", method: "SendMessage",
+        params: { "message" => { "role" => "ROLE_USER", "parts" => [ { "text" => "Fire and forget" } ] } }
       }), headers: json_headers.merge(@api_key_header)
     end
 
@@ -351,8 +351,8 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     assert_no_difference [ "Chat.count", "Message.count" ] do
       assert_enqueued_jobs 0, only: AssistantResponseJob do
         post a2a_path, params: JSON.generate({
-          jsonrpc: "2.0", method: "message/send",
-          params: { "message" => { "role" => "user", "parts" => [ { "type" => "text", "text" => "Should not run" } ] } }
+          jsonrpc: "2.0", method: "SendMessage",
+          params: { "message" => { "role" => "ROLE_USER", "parts" => [ { "text" => "Should not run" } ] } }
         }), headers: json_headers.merge(@api_key_header)
       end
     end
@@ -367,21 +367,25 @@ class Api::V1::A2aControllerTest < ActionDispatch::IntegrationTest
     end
 
     def json_headers
-      { "Content-Type" => "application/json" }
+      { "Content-Type" => "application/json", "A2A-Version" => "1.0" }
     end
 
+    # v1.0 wire: PascalCase SendMessage, presence-based text part, uppercase
+    # ROLE_USER. Continuation uses message.taskId (the v1.0 Message field).
     def send_message_rpc(text, id: 1, task_id: nil)
-      params = { "message" => { "role" => "user", "parts" => [ { "type" => "text", "text" => text } ] } }
-      params["taskId"] = task_id if task_id.present?
-      JSON.generate({ jsonrpc: "2.0", id: id, method: "message/send", params: params })
+      params = { "message" => { "role" => "ROLE_USER", "parts" => [ { "text" => text } ] } }
+      params["message"]["taskId"] = task_id if task_id.present?
+      JSON.generate({ jsonrpc: "2.0", id: id, method: "SendMessage", params: params })
     end
 
+    # v1.0: GetTask uses params.id (the resource id).
     def tasks_get_rpc(task_id, id: 1)
-      JSON.generate({ jsonrpc: "2.0", id: id, method: "tasks/get", params: { "taskId" => task_id } })
+      JSON.generate({ jsonrpc: "2.0", id: id, method: "GetTask", params: { "id" => task_id } })
     end
 
+    # v1.0: CancelTask uses params.id (the resource id).
     def tasks_cancel_rpc(task_id, id: 1)
-      JSON.generate({ jsonrpc: "2.0", id: id, method: "tasks/cancel", params: { "taskId" => task_id } })
+      JSON.generate({ jsonrpc: "2.0", id: id, method: "CancelTask", params: { "id" => task_id } })
     end
 
     def bearer_auth_header(token)
