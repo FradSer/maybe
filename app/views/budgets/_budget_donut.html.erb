@@ -5,7 +5,11 @@
     <div data-donut-chart-target="defaultContent" class="flex flex-col items-center">
       <% if budget.initialized? %>
         <div class="text-secondary text-sm mb-2">
-          <span>Spent</span>
+          <% if budget.available_to_spend.positive? %>
+            <span>Under budget!</span>
+          <% else %>
+            <span>Spent</span>
+          <% end %>
         </div>
 
         <div class="mb-2 text-3xl font-medium <%= budget.available_to_spend.negative? ? "text-destructive" : "text-primary" %>">
