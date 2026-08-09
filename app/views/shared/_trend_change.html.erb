@@ -1,9 +1,12 @@
 <%# locals: { trend:, comparison_label: nil } %>
 
-<p class="text-sm" style="color: <%= trend.color %>">
+<p class="text-sm flex items-center gap-1" style="color: <%= trend.color %>">
   <% if trend.direction.flat? %>
     <%= t(".no_change") %><%= " #{comparison_label}" if defined?(comparison_label) && comparison_label.present? %>
   <% else %>
+    <svg width="8" height="8" viewBox="0 0 8 8" fill="<%= trend.color %>" class="inline-block shrink-0" aria-hidden="true">
+      <circle cx="4" cy="4" r="3"/>
+    </svg>
     <span class="font-mono">
       <%= trend.value.is_a?(Money) ? format_money(trend.value) : trend.value.round(2) %>
     </span>
