@@ -172,7 +172,6 @@
     <% end %>
 
     <%# Right AI chat sidebar (collapsible, never shrinks) %>
-    <% if @chat.present? %>
     <%= tag.div class: class_names(
           "hidden md:block app-layout__sidebar app-layout__sidebar--right",
           Current.user.show_ai_sidebar? ? "app-layout__sidebar--open" : "app-layout__sidebar--closed",
@@ -196,7 +195,6 @@
           <% end %>
         <% end %>
       </div>
-    <% end %>
     <% end %>
 
     <%# ======================= MOBILE ======================= %>

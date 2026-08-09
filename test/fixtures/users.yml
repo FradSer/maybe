@@ -23,7 +23,7 @@ family_admin:
   first_name: Bob
   last_name: Dylan
   email: bob@bobdylan.com
-  password_digest: $2a$12$XoNBo/cMCyzpYtvhrPAhsubG21mELX48RAcjSVCRctW8dG8wrDIla 
+  password_digest: $2a$12$XoNBo/cMCyzpYtvhrPAhsubG21mELX48RAcjSVCRctW8dG8wrDIla
   role: admin
   onboarded_at: <%= 3.days.ago %>
   ai_enabled: true
