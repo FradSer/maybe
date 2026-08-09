@@ -35,8 +35,8 @@ export default class extends Controller {
     rightOpen: { type: Boolean, default: true },
   };
 
-  // Fixed left nav rail width (must match CSS .app-layout__nav-rail)
-  #navWidth = 84;
+  // Fixed left nav rail width — read from CSS custom property
+  #navWidth = null;
 
   // Hysteresis prevents flapping when the window is near the threshold
   #hysteresis = 60;
@@ -58,6 +58,11 @@ export default class extends Controller {
   // ── Lifecycle ────────────────────────────────────────────────────────
 
   connect() {
+    // Read nav width from CSS variable
+    this.#navWidth = parseInt(
+      getComputedStyle(this.element).getPropertyValue("--nav-width").trim() || "84",
+      10
+    );
     this.#checkPanels();
     window.addEventListener("resize", this.#onResize);
   }
@@ -78,6 +83,9 @@ export default class extends Controller {
     this.mobileSidebarTarget.setAttribute("aria-hidden", "false");
     this.mobileBackdropTarget.classList.add("opacity-100");
     this.mobileBackdropTarget.classList.remove("opacity-0", "pointer-events-none");
+    // Focus the close button inside the drawer
+    const closeBtn = this.mobileSidebarTarget.querySelector('[data-action="app-layout#closeMobileSidebar"]');
+    if (closeBtn) closeBtn.focus();
   }
 
   closeMobileSidebar() {
@@ -85,6 +93,9 @@ export default class extends Controller {
     this.mobileSidebarTarget.setAttribute("aria-hidden", "true");
     this.mobileBackdropTarget.classList.add("opacity-0", "pointer-events-none");
     this.mobileBackdropTarget.classList.remove("opacity-100");
+    // Return focus to the hamburger button
+    const hamburger = this.element.querySelector('[data-action="app-layout#openMobileSidebar"]');
+    if (hamburger) hamburger.focus();
   }
 
   // ── Desktop sidebar toggle (user-initiated) ─────────────────────────
@@ -153,7 +164,7 @@ export default class extends Controller {
    *   Restore adds hysteresis (+H) to prevent flapping.
    */
   #checkPanels() {
-    if (this.#isMobile || !this.hasLeftSidebarTarget) return;
+    if (this.#isMobile) return;
 
     const available = window.innerWidth - this.#navWidth;
     const LEFT = this.leftSidebarWidthValue;
