@@ -52,6 +52,7 @@ Rails.application.routes.draw do
       get :preferences
       get :goals
       get :trial
+      get :skip
     end
   end
 
