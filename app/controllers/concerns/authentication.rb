@@ -39,7 +39,14 @@ module Authentication
 
     def create_session_for(user)
       session = user.sessions.create!
-      cookies.signed.permanent[:session_token] = { value: session.id, httponly: true }
+      # Only the sign-in form submits remember_me; when the user explicitly
+      # unchecks it, the session expires in 24h. Absent (MFA, registration) keeps
+      # the historical permanent session so those flows are not silently shortened.
+      if params[:remember_me] == "0"
+        cookies.signed[:session_token] = { value: session.id, httponly: true, expires: 24.hours.from_now }
+      else
+        cookies.signed.permanent[:session_token] = { value: session.id, httponly: true }
+      end
       session
     end
 
