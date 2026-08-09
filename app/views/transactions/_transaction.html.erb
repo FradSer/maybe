@@ -10,6 +10,7 @@
         <%= check_box_tag dom_id(entry, "selection"),
             disabled: transaction.transfer.present?,
             class: "checkbox checkbox--light",
+            title: transaction.transfer.present? ? "Transfer transactions cannot be bulk-edited. Edit them individually." : "",
             data: {
               id: entry.id,
               "bulk-select-target": "row",

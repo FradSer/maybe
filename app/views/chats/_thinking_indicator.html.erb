@@ -3,4 +3,11 @@
 <div id="thinking-indicator" class="flex items-start gap-3">
   <%= render "chats/ai_avatar" %>
   <p class="text-sm text-secondary animate-pulse"><%= message %></p>
+  <%= button_to cancel_chat_path(chat),
+                method: :post,
+                class: "text-xs text-secondary underline hover:text-primary ml-auto",
+                data: { turbo_frame: chat_frame },
+                title: "Cancel response" do %>
+    Cancel
+  <% end %>
 </div>

@@ -1,7 +1,7 @@
 class ChatsController < ApplicationController
   include ActionView::RecordIdentifier
 
-  before_action :set_chat, only: [ :show, :edit, :update, :destroy ]
+  before_action :set_chat, only: [ :show, :edit, :update, :destroy, :retry, :cancel ]
 
   def index
     @chat = nil # override application_controller default behavior of setting @chat to last viewed chat
@@ -44,6 +44,11 @@ class ChatsController < ApplicationController
   def retry
     @chat.retry_last_message!
     redirect_to chat_path(@chat, thinking: true)
+  end
+
+  def cancel
+    @chat.cancel!
+    redirect_to chat_path(@chat)
   end
 
   private
