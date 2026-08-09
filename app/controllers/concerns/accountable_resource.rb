@@ -37,7 +37,7 @@ module AccountableResource
     @account = Current.family.accounts.create_and_sync(account_params.except(:return_to))
     @account.lock_saved_attributes!
 
-    redirect_to account_params[:return_to].presence || @account, notice: t("accounts.create.success", type: accountable_type.name.underscore.humanize)
+    redirect_to safe_return_to || @account, notice: t("accounts.create.success", type: accountable_type.name.underscore.humanize)
   end
 
   def update
@@ -76,6 +76,14 @@ module AccountableResource
 
     def set_account
       @account = Current.family.accounts.find(params[:id])
+    end
+
+    # Only allow relative, same-origin paths as a redirect target so the
+    # return_to param can't be abused as an open redirect. Absolute URLs
+    # (http://, https://, //) fall back to nil → redirect to @account.
+    def safe_return_to
+      return_to = account_params[:return_to]
+      return_to if return_to.present? && return_to.start_with?("/") && !return_to.start_with?("//") && !return_to.start_with?("/\\")
     end
 
     def account_params
