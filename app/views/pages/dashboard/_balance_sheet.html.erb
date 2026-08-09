@@ -40,7 +40,17 @@
             <div class="w-40">Name</div>
             <div class="ml-auto text-right flex items-center gap-6">
               <div class="w-24">
-                <p>Weight</p>
+                <p class="inline-flex items-center gap-1">
+                  Weight
+                  <span data-controller="tooltip" class="inline-flex items-center">
+                    <%= icon "info", size: "sm", class: "text-secondary cursor-help" %>
+                    <span role="tooltip" data-tooltip-target="tooltip" class="tooltip bg-gray-700 text-sm p-2 rounded w-64">
+                      <span class="fg-inverse">
+                        Shows what percentage of your total assets or debts each account group represents.
+                      </span>
+                    </span>
+                  </span>
+                </p>
               </div>
               <div class="w-40">
                 <p>Value</p>

@@ -30,6 +30,12 @@
 
     <% tabs.with_panel(tab_id: "asset") do %>
       <div class="space-y-2">
+        <div class="flex items-center gap-1 text-xs text-secondary" data-controller="tooltip">
+          <span class="underline cursor-help decoration-dotted">(What's this?)</span>
+          <span role="tooltip" data-tooltip-target="tooltip" class="tooltip bg-gray-700 text-sm p-2 rounded w-64">
+            <span class="fg-inverse">In financial terms, an asset is a resource with economic value that you own or control, expected to provide future benefit. Common examples include bank accounts, stocks, real estate, and vehicles.</span>
+          </span>
+        </div>
         <%= render DS::Link.new(
           text: "New asset",
           variant: "ghost",
@@ -50,6 +56,12 @@
 
     <% tabs.with_panel(tab_id: "liability") do %>
       <div class="space-y-2">
+        <div class="flex items-center gap-1 text-xs text-secondary" data-controller="tooltip">
+          <span class="underline cursor-help decoration-dotted">(What's this?)</span>
+          <span role="tooltip" data-tooltip-target="tooltip" class="tooltip bg-gray-700 text-sm p-2 rounded w-64">
+            <span class="fg-inverse">In financial terms, a debt (liability) is a financial obligation you owe to another party. Common examples include credit card balances, loans, and mortgages.</span>
+          </span>
+        </div>
         <%= render DS::Link.new(
             text: "New debt",
             variant: "ghost",

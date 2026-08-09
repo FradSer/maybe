@@ -2,7 +2,7 @@ import { Controller } from "@hotwired/stimulus";
 
 // Connects to data-controller="password-validator"
 export default class extends Controller {
-  static targets = ["input", "requirementType", "blockLine"];
+  static targets = ["input", "requirementType", "blockLine", "confirmation", "confirmationMatch", "confirmationMismatch"];
 
   connect() {
     this.validate();
@@ -32,6 +32,35 @@ export default class extends Controller {
 
     // Update block lines sequentially
     this.updateBlockLines(requirementsMet);
+
+    // Re-validate confirmation if it has a value
+    if (this.hasConfirmationTarget && this.confirmationTarget.value.length > 0) {
+      this.validateConfirmation();
+    }
+  }
+
+  validateConfirmation() {
+    if (!this.hasConfirmationTarget) return;
+
+    const password = this.inputTarget.value;
+    const confirmation = this.confirmationTarget.value;
+    const match = password === confirmation && password.length > 0;
+
+    // Toggle visual feedback on the confirmation input
+    this.confirmationTarget.classList.remove("border-destructive", "border-success", "text-destructive");
+    if (confirmation.length > 0) {
+      if (match) {
+        this.confirmationTarget.classList.add("border-success");
+      } else {
+        this.confirmationTarget.classList.add("border-destructive");
+      }
+    }
+
+    // Toggle confirmation match status messages
+    this.hasConfirmationMatchTarget && this.confirmationMatchTarget.classList.toggle("hidden", !match);
+    this.hasConfirmationMismatchTarget && this.confirmationMismatchTarget.classList.toggle(
+      "hidden", match || confirmation.length === 0
+    );
   }
 
   validateRequirementText(type, isValid) {
@@ -39,9 +68,9 @@ export default class extends Controller {
       if (target.dataset.requirementType === type) {
         if (isValid) {
           target.classList.remove("text-secondary");
-          target.classList.add("text-green-600");
+          target.classList.add("text-success");
         } else {
-          target.classList.remove("text-green-600");
+          target.classList.remove("text-success");
           target.classList.add("text-secondary");
         }
       }
@@ -52,11 +81,11 @@ export default class extends Controller {
     // Update block lines sequentially based on total requirements met
     this.blockLineTargets.forEach((line, index) => {
       if (index < requirementsMet) {
-        line.classList.remove("bg-gray-200");
-        line.classList.add("bg-green-600");
+        line.classList.remove("bg-surface-inset");
+        line.classList.add("bg-success");
       } else {
-        line.classList.remove("bg-green-600");
-        line.classList.add("bg-gray-200");
+        line.classList.remove("bg-success");
+        line.classList.add("bg-surface-inset");
       }
     });
   }

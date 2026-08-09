@@ -18,6 +18,7 @@
 
     <div class="flex flex-col grow overflow-y-auto">
       <div class="grow p-3 border-b border-secondary overflow-y-auto">
+        <p class="text-xs text-secondary mb-3">Filter your transactions by category, account, tag, amount, date, merchant, or type.</p>
         <% transaction_search_filters.each do |filter| %>
           <%= tabs.with_panel(tab_id: filter[:key]) do %>
             <%= render partial: get_transaction_search_filter_partial_path(filter), locals: { form: form } %>
