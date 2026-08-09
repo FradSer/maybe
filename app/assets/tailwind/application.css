@@ -218,9 +218,11 @@
 }
 
 .app-layout__sidebar--closed {
-  width: 0 !important;
-  min-width: 0 !important;
-  padding: 0 !important;
+  width: 0;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+  visibility: hidden;
 }
 
 /* Mobile slide-in drawer */

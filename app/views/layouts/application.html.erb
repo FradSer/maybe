@@ -20,7 +20,7 @@
 
 <%= render "layouts/shared/htmldoc" do %>
   <div
-    class="app-layout flex flex-col md:flex-row h-full bg-surface"
+    class="app-layout flex flex-col md:flex-row md:gap-3 h-full bg-surface"
     data-controller="app-layout"
     data-app-layout-left-open-value="<%= Current.user.show_sidebar? %>"
     data-app-layout-right-open-value="<%= Current.user.show_ai_sidebar? %>"
@@ -72,10 +72,15 @@
     </nav>
 
     <%# ======================= DESKTOP ======================= %>
+    <%# Desktop panels are kept together in a single section.
+        The hidden md:block guard ensures they are invisible on mobile,
+        and the md:hidden guard on mobile elements ensures they are
+        invisible on desktop. Focus order follows the DOM order within
+        each breakpoint's visible set. %>
 
     <%# Fixed left navigation rail (84px) %>
     <div class="hidden md:block app-layout__nav-rail">
-      <nav class="h-full flex flex-col shrink-0 w-[84px] min-w-[84px] py-4 mr-3" aria-label="Main navigation">
+      <nav class="h-full flex flex-col shrink-0 w-[84px] min-w-[84px] py-4" aria-label="Main navigation">
         <div class="pl-2 mb-3">
           <%= link_to root_path, class: "block" do %>
             <%= image_tag "logomark-color.svg", class: "w-9 h-9 mx-auto" %>
@@ -94,7 +99,8 @@
           <%= render DS::Button.new(
             variant: "icon",
             icon: "message-circle-question",
-            data: { action: "intercom#show" }
+            data: { action: "intercom#show" },
+            class: "focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:outline-none"
           ) %>
 
           <%= render "users/user_menu", user: Current.user %>
@@ -144,10 +150,10 @@
     <% end %>
 
     <%# Main content (shrinks first, centered via justify-center on parent) %>
-    <%= tag.main class: class_names("grow overflow-y-auto px-3 md:px-10 py-4 w-full min-w-[480px]"), data: { app_layout_target: "content" } do %>
+    <%= tag.main class: class_names("grow overflow-y-auto px-3 sm:px-5 md:px-8 py-4 w-full min-w-[480px]"), style: "overscroll-behavior: contain", data: { app_layout_target: "content" } do %>
       <div class="hidden md:flex gap-2 items-center justify-between mb-6">
         <div class="flex items-center gap-2">
-          <%= icon("panel-left", as_button: true, data: { action: "app-layout#toggleLeftSidebar" }, class: "focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:outline-none rounded-lg") %>
+          <%= icon("panel-left", as_button: true, data: { action: "app-layout#toggleLeftSidebar" }, class: "focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:outline-none rounded-lg") %>
 
           <% if content_for?(:breadcrumbs) %>
             <%= yield :breadcrumbs %>
@@ -155,7 +161,7 @@
             <%= render "layouts/shared/breadcrumbs", breadcrumbs: @breadcrumbs %>
           <% end %>
         </div>
-        <%= icon("panel-right", as_button: true, data: { action: "app-layout#toggleRightSidebar" }, class: "focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:outline-none rounded-lg") %>
+        <%= icon("panel-right", as_button: true, data: { action: "app-layout#toggleRightSidebar" }, class: "focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:outline-none rounded-lg") %>
       </div>
 
       <% if content_for?(:page_header) %>
@@ -166,6 +172,7 @@
     <% end %>
 
     <%# Right AI chat sidebar (collapsible, never shrinks) %>
+    <% if @chat.present? %>
     <%= tag.div class: class_names(
           "hidden md:block app-layout__sidebar app-layout__sidebar--right",
           Current.user.show_ai_sidebar? ? "app-layout__sidebar--open" : "app-layout__sidebar--closed",
@@ -174,7 +181,7 @@
         aria: { label: "AI chat sidebar" } do %>
       <div class="h-full">
         <%= tag.div id: "chat-container", class: "relative h-full", data: { controller: "chat hotkey", turbo_permanent: true } do %>
-          <div class="flex flex-col h-full justify-between shrink-0">
+          <div class="flex flex-col h-full justify-between">
             <%= turbo_frame_tag chat_frame, src: chat_view_path(@chat), loading: "lazy", class: "h-full" do %>
               <div class="flex justify-center items-center h-full">
                 <%= icon("loader-circle", class: "animate-spin") %>
@@ -183,12 +190,13 @@
           </div>
 
           <% unless Current.user.ai_enabled? %>
-            <div class="absolute backdrop-blur-lg inset-0 h-full w-full flex flex-col justify-center items-center pl-0.5 pr-4">
+            <div class="absolute backdrop-blur-lg inset-0 h-full w-full flex flex-col justify-center items-center px-4">
               <%= render "chats/ai_consent" %>
             </div>
           <% end %>
         <% end %>
       </div>
+    <% end %>
     <% end %>
 
     <%# ======================= MOBILE ======================= %>
