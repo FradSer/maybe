@@ -2,7 +2,14 @@ import { Controller } from "@hotwired/stimulus";
 
 // Connects to data-controller="password-validator"
 export default class extends Controller {
-  static targets = ["input", "requirementType", "blockLine", "confirmation", "confirmationMatch", "confirmationMismatch"];
+  static targets = [
+    "input",
+    "requirementType",
+    "blockLine",
+    "confirmation",
+    "confirmationMatch",
+    "confirmationMismatch",
+  ];
 
   connect() {
     this.validate();
@@ -34,7 +41,10 @@ export default class extends Controller {
     this.updateBlockLines(requirementsMet);
 
     // Re-validate confirmation if it has a value
-    if (this.hasConfirmationTarget && this.confirmationTarget.value.length > 0) {
+    if (
+      this.hasConfirmationTarget &&
+      this.confirmationTarget.value.length > 0
+    ) {
       this.validateConfirmation();
     }
   }
@@ -47,7 +57,11 @@ export default class extends Controller {
     const match = password === confirmation && password.length > 0;
 
     // Toggle visual feedback on the confirmation input
-    this.confirmationTarget.classList.remove("border-destructive", "border-success", "text-destructive");
+    this.confirmationTarget.classList.remove(
+      "border-destructive",
+      "border-success",
+      "text-destructive",
+    );
     if (confirmation.length > 0) {
       if (match) {
         this.confirmationTarget.classList.add("border-success");
@@ -57,10 +71,13 @@ export default class extends Controller {
     }
 
     // Toggle confirmation match status messages
-    this.hasConfirmationMatchTarget && this.confirmationMatchTarget.classList.toggle("hidden", !match);
-    this.hasConfirmationMismatchTarget && this.confirmationMismatchTarget.classList.toggle(
-      "hidden", match || confirmation.length === 0
-    );
+    this.hasConfirmationMatchTarget &&
+      this.confirmationMatchTarget.classList.toggle("hidden", !match);
+    this.hasConfirmationMismatchTarget &&
+      this.confirmationMismatchTarget.classList.toggle(
+        "hidden",
+        match || confirmation.length === 0,
+      );
   }
 
   validateRequirementText(type, isValid) {

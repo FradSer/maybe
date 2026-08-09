@@ -24,7 +24,11 @@ export default class extends Controller {
   shouldHandle(event) {
     if (event.defaultPrevented) return false;
     const target = event.target;
-    if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) return false;
+    if (
+      target instanceof HTMLInputElement ||
+      target instanceof HTMLTextAreaElement
+    )
+      return false;
     if (target.isContentEditable) return false;
     return true;
   }
