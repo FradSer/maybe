@@ -23,7 +23,10 @@ export default class extends Controller {
     const button = this.element.querySelector("button");
     if (!button) return;
     const showing = this.inputTarget.type === "text";
-    button.setAttribute("aria-label", showing ? "Hide password" : "Show password");
+    button.setAttribute(
+      "aria-label",
+      showing ? "Hide password" : "Show password",
+    );
     button.setAttribute("aria-pressed", String(showing));
   }
 }
