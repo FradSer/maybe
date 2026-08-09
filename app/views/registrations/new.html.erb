@@ -64,6 +64,41 @@
       </button>
     </div>
 
+    <div data-controller="password-visibility" class="relative mt-4">
+      <%= form.password_field :password_confirmation,
+          autocomplete: "new-password",
+          required: "required",
+          placeholder: "Re-enter your password",
+          label: "Confirm password",
+          maxlength: 72,
+          data: {
+            password_validator_target: "confirmation",
+            password_visibility_target: "input",
+            action: "input->password-validator#validateConfirmation"
+          } %>
+      <button type="button"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-secondary hover:text-primary focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2 rounded-md min-w-[44px] min-h-[44px] flex items-center justify-center"
+              data-action="click->password-visibility#toggle">
+        <div data-password-visibility-target="showIcon">
+          <%= icon("eye") %>
+        </div>
+        <div data-password-visibility-target="hideIcon">
+          <%= icon("eye-off") %>
+        </div>
+      </button>
+    </div>
+
+    <div class="flex items-center gap-2 text-sm mt-1">
+      <span data-password-validator-target="confirmationMatch" class="hidden items-center gap-1 text-success">
+        <%= icon("check", size: "sm") %>
+        Passwords match
+      </span>
+      <span data-password-validator-target="confirmationMismatch" class="hidden items-center gap-1 text-destructive">
+        <%= icon("x", size: "sm") %>
+        Passwords do not match
+      </span>
+    </div>
+
     <div class="flex gap-4 my-4">
       <div class="h-1 bg-surface-inset rounded-full flex-grow" data-password-validator-target="blockLine" data-requirement-type="length"></div>
       <div class="h-1 bg-surface-inset rounded-full flex-grow" data-password-validator-target="blockLine" data-requirement-type="case"></div>

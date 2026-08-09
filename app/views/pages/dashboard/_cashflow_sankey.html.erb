@@ -3,6 +3,14 @@
   <div class="flex justify-between items-center gap-4 px-4 mb-4">
     <h2 class="text-lg font-medium inline-flex items-center gap-1.5">
       Cashflow
+      <span data-controller="tooltip" class="inline-flex items-center">
+        <%= icon "info", size: "sm", class: "text-secondary cursor-help" %>
+        <span role="tooltip" data-tooltip-target="tooltip" class="tooltip bg-gray-700 text-sm p-2 rounded w-64">
+          <span class="fg-inverse">
+            Shows how money flows between your accounts over the selected period. Thicker lines mean more money moving between those accounts.
+          </span>
+        </span>
+      </span>
     </h2>
 
     <%= form_with url: root_path, method: :get, data: { controller: "auto-submit-form", turbo_frame: "cashflow_sankey_section" } do |form| %>
