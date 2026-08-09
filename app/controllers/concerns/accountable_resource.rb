@@ -37,7 +37,7 @@ module AccountableResource
     @account = Current.family.accounts.create_and_sync(account_params.except(:return_to))
     @account.lock_saved_attributes!
 
-    redirect_to safe_return_to || @account, notice: t("accounts.create.success", type: accountable_type.name.underscore.humanize)
+    redirect_to safe_return_to || @account, notice: t("accounts.create.success", type: accountable_type.name.underscore.humanize), allow_other_host: false
   end
 
   def update
