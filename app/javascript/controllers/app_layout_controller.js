@@ -59,7 +59,7 @@ export default class extends Controller {
 
   connect() {
     // Read nav width from CSS variable
-    this.#navWidth = parseInt(
+    this.#navWidth = Number.parseInt(
       getComputedStyle(this.element).getPropertyValue("--nav-width").trim() || "84",
       10
     );
