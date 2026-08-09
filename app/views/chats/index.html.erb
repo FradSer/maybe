@@ -1,4 +1,4 @@
-<div data-controller="chat hotkey">
+<div data-controller="chat hotkey chat-search">
   <%= turbo_frame_tag chat_frame do %>
     <div class="flex flex-col h-full md:p-4">
       <% if @chats.any? %>
@@ -14,7 +14,19 @@
               text: "New chat"
             ) %>
           </div>
-          <div class="space-y-2 px-0.5">
+
+          <div class="mb-4">
+            <div class="flex items-center px-3 py-2 gap-2 border border-secondary rounded-lg focus-within:ring-secondary focus-within:border-secondary">
+              <%= icon("search") %>
+              <input type="text"
+                     placeholder="Search chats..."
+                     class="form-field__input placeholder:text-sm placeholder:text-secondary w-full"
+                     data-action="input->chat-search#filter"
+                     data-chat-search-target="input">
+            </div>
+          </div>
+
+          <div class="space-y-2 px-0.5" data-chat-search-target="list">
             <%= render @chats %>
           </div>
         </div>

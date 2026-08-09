@@ -17,6 +17,11 @@
           <p class="text-sm text-secondary"><%= t(".data_not_available") %></p>
         <% else %>
           <%= render partial: "shared/trend_change", locals: { trend: series.trend, comparison_label: period.comparison_label } %>
+          <% if Current.family.latest_sync_completed_at.present? %>
+            <p class="text-xs text-secondary mt-1">
+              Updated <%= time_ago_in_words(Current.family.latest_sync_completed_at) %> ago
+            </p>
+          <% end %>
         <% end %>
       </div>
     </div>

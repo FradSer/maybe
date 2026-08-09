@@ -39,6 +39,15 @@
     <%= render "impersonation_sessions/super_admin_bar" if Current.true_user&.super_admin? && show_super_admin_bar? %>
     <%= render "impersonation_sessions/approval_bar" if Current.true_user&.impersonated_support_sessions&.initiated&.any? %>
 
-    <%= yield %>
+    <%# Global hotkey bindings %>
+<button hidden data-controller="hotkey" data-hotkey="n" data-action="hotkey#newTransaction">New transaction</button>
+<button hidden data-controller="hotkey" data-hotkey="/" data-action="hotkey#focusSearch">Search</button>
+<button hidden data-controller="hotkey" data-hotkey="g d" data-action="hotkey#goToDashboard">Dashboard</button>
+<button hidden data-controller="hotkey" data-hotkey="g t" data-action="hotkey#goToTransactions">Transactions</button>
+<button hidden data-controller="hotkey" data-hotkey="g a" data-action="hotkey#goToAccounts">Accounts</button>
+<button hidden data-controller="hotkey" data-hotkey="g b" data-action="hotkey#goToBudgets">Budgets</button>
+<button hidden data-controller="hotkey" data-hotkey="?" data-action="hotkey#toggleHelpOverlay">Help</button>
+
+<%= yield %>
   </body>
 </html>
