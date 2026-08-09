@@ -47,6 +47,7 @@ en:
       edit_tags: Edit tags
       import: Import
     index:
+      import: Import
       transaction: transaction
       transactions: transactions
     searches:
