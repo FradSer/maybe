@@ -12,7 +12,8 @@
 
     <%= button_to transfer_path(transaction.transfer, transfer: { status: "confirmed" }),
                     method: :patch,
-                    class: "text-secondary flex items-center justify-center cursor-pointer",
+                    class: "text-secondary flex items-center justify-center min-w-[44px] min-h-[44px] cursor-pointer",
+                    aria: { label: "Confirm match" },
                     title: "Confirm match" do %>
       <%= icon "check", size: "sm", class: "text-secondary hover:text-primary" %>
     <% end %>
@@ -20,7 +21,8 @@
     <%= button_to transfer_path(transaction.transfer, transfer: { status: "rejected" }),
                     method: :patch,
                     data: { turbo: false },
-                    class: "text-secondary hover:text-primary flex items-center justify-center cursor-pointer",
+                    class: "text-secondary hover:text-primary flex items-center justify-center min-w-[44px] min-h-[44px] cursor-pointer",
+                    aria: { label: "Reject match" },
                     title: "Reject match" do %>
       <%= icon "x", size: "sm", class: "text-subdued hover:text-primary" %>
     <% end %>

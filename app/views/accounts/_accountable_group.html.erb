@@ -25,7 +25,7 @@
       <% account_group.accounts.each do |account| %>
         <%= link_to account_path(account),
                   class: class_names(
-                    "block flex items-center gap-2 px-3 py-2 rounded-lg",
+                    "block flex items-center gap-2 px-3 py-3 rounded-lg",
                     page_active?(account_path(account)) ? "bg-container" : "hover:bg-surface-hover"
                   ),
                   title: account.name do %>

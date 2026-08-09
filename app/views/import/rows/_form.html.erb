@@ -28,7 +28,10 @@
                 disabled: row.import.complete? %>
 
           <% if !cell_is_valid?(row, key) %>
-            <span class="absolute right-2 top-1/2 -translate-y-1/2 text-destructive md:hidden"
+            <span class="absolute right-2 top-1/2 -translate-y-1/2 text-destructive md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center"
+                  role="button"
+                  aria-label="Toggle error message"
+                  tabindex="0"
                   data-action="click->mobile-cell-interaction#toggleErrorMessage"
               data-mobile-cell-interaction-target="errorIcon">
               <%= icon "alert-circle", size: "sm", color: "destructive" %>

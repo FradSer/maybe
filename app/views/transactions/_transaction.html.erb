@@ -6,7 +6,7 @@
   <%= turbo_frame_tag dom_id(transaction) do %>
     <div class="grid grid-cols-12 items-center text-primary text-sm font-medium p-4 <%= entry.excluded ? "opacity-50 text-subdued" : "" %>">
 
-      <div class="pr-4 lg:pr-10 flex items-center gap-3 lg:gap-4 col-span-8">
+      <div class="pr-4 lg:pr-6 flex items-center gap-3 lg:gap-4 col-span-8">
         <%= check_box_tag dom_id(entry, "selection"),
             disabled: transaction.transfer.present?,
             class: "checkbox checkbox--light",
@@ -71,7 +71,7 @@
                   </div>
                 </div>
 
-                <div class="text-secondary text-xs font-normal hidden lg:block">
+                <div class="text-secondary text-xs font-normal hidden md:block">
                   <% if transaction.transfer? %>
                     <span class="text-secondary">
                       <%= transaction.loan_payment? ? "Loan Payment" : "Transfer" %> • <%= entry.account.name %>
@@ -89,7 +89,7 @@
         </div>
       </div>
 
-      <div class="hidden lg:flex items-center gap-1 col-span-2">
+      <div class="hidden md:flex items-center gap-1 col-span-2">
         <%= render "transactions/transaction_category", transaction: transaction %>
       </div>
 

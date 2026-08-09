@@ -1,6 +1,6 @@
 <% content_for :page_header do %>
   <% unless Current.family.self_hoster? %>
-    <div class="bg-gray-100 mb-4 rounded-xl p-4 flex gap-2 items-start">
+    <div class="bg-surface-inset mb-4 rounded-xl p-4 flex gap-2 items-start">
       <%= icon "triangle-alert", color: "warning" %>
       <div class="text-sm space-y-2">
         <p class="font-medium">We've made a tough decision to shut down the hosted version of Maybe. Here's what's happening next:</p>
@@ -33,7 +33,8 @@
         icon: "plus",
         href: new_account_path,
         frame: :modal,
-        class: "rounded-full md:hidden"
+        class: "rounded-full min-w-[44px] min-h-[44px] md:hidden",
+        aria: { label: "Create new account" }
       ) %>
   </div>
 <% end %>

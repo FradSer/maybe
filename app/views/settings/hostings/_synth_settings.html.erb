@@ -21,7 +21,7 @@
                         placeholder: t(".placeholder"),
                         value: ENV.fetch("SYNTH_API_KEY", Setting.synth_api_key),
                         disabled: ENV["SYNTH_API_KEY"].present?,
-                        container_class: @synth_usage.present? && !@synth_usage.success? ? "border-red-500" : "",
+                        container_class: @synth_usage.present? && !@synth_usage.success? ? "border-destructive" : "",
                         data: { "auto-submit-form-target": "auto" } %>
   <% end %>
 

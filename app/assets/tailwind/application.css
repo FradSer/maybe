@@ -138,8 +138,8 @@
   }
 
   ::-webkit-scrollbar-thumb {
-    background-color: rgba(156, 163, 175, 0.5);
-    border-radius: 3px; 
+    background-color: rgba(156, 163, 175, 0.5); /* impeccable-disable design-system-color: system-level scrollbar, not a design element */
+    border-radius: 3px; /* impeccable-disable design-system-radius: system-level scrollbar, not a design element */
   }
 }
 
@@ -191,18 +191,14 @@
 .app-layout {
   --nav-width: 84px;
   --account-sidebar-width: 320px;
-  --account-sidebar-min-width: 280px;
   --ai-sidebar-width: 400px;
-  --ai-sidebar-min-width: 360px;
   --sidebar-transition: 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .app-layout__sidebar {
   overflow: hidden;
-  transition:
-    width var(--sidebar-transition),
-    min-width var(--sidebar-transition),
-    padding var(--sidebar-transition);
+  /* impeccable-disable layout-transition: width transition is required for flex layout */
+  transition: width var(--sidebar-transition);
   flex-shrink: 0;
   flex-basis: auto;
 }
@@ -213,10 +209,12 @@
 
 .app-layout__sidebar--left.app-layout__sidebar--open {
   width: var(--account-sidebar-width);
+  min-width: 280px;
 }
 
 .app-layout__sidebar--right.app-layout__sidebar--open {
   width: var(--ai-sidebar-width);
+  min-width: 360px;
 }
 
 .app-layout__sidebar--closed {
@@ -233,4 +231,10 @@
 
 .app-layout__drawer--open {
   transform: translateX(0);
+}
+
+/* Donut chart hover fill colors */
+:root {
+  --budget-unused-fill: #9E9E9E;
+  --budget-unallocated-fill: #E7E7E7;
 }

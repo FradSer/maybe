@@ -5,7 +5,7 @@
     <button type="button"
             data-profile-image-preview-target="clearBtn"
             data-action="click->profile-image-preview#clearFileInput"
-      class="<%= user.profile_image.attached? ? "" : "hidden" %> z-50 cursor-pointer absolute bottom-0 right-0 w-8 h-8 bg-surface rounded-full flex justify-center items-center border border-container border-2">
+      class="<%= user.profile_image.attached? ? "" : "hidden" %> z-50 cursor-pointer absolute bottom-0 right-0 min-w-[44px] min-h-[44px] w-8 h-8 bg-surface rounded-full flex justify-center items-center border border-container border-2">
       <%= icon "x", size: "sm" %>
     </button>
 
@@ -38,7 +38,7 @@
   <div class="text-center">
     <%= form.hidden_field :delete_profile_image, value: "0", data: { profile_image_preview_target: "deleteProfileImage" } %>
 
-    <%= form.label :profile_image, class: "px-3 py-2 rounded-lg text-sm hover:bg-surface-hover border border-secondary inline-flex items-center gap-2 cursor-pointer", data: { profile_image_preview_target: "uploadButton" } do %>
+    <%= form.label :profile_image, class: "px-3 py-3 min-h-[44px] rounded-lg text-sm hover:bg-surface-hover border border-secondary inline-flex items-center gap-2 cursor-pointer", data: { profile_image_preview_target: "uploadButton" } do %>
       <%= icon "camera", data: { profile_image_preview_target: "cameraIcon" } %>
       <span data-profile-image-preview-target="uploadText">
         <%= t(".choose") %> <span class="text-secondary"><%= t(".choose_label") %></span>

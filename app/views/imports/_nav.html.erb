@@ -12,7 +12,7 @@
   <% active_step = steps.detect { |s| request.path.eql?(s[:path]) } %>
   <% if active_step.present? %>
     <div class="md:hidden text-center text-secondary text-md my-2">
-      <span class="text-gray-500">Step <%= active_step[:step_number] %> of <%= steps.size %></span>
+      <span class="text-secondary">Step <%= active_step[:step_number] %> of <%= steps.size %></span>
     </div>
   <% end %>
 <% end %>
