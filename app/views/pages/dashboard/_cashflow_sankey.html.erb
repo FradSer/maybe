@@ -10,7 +10,8 @@
                 Period.as_options,
                 { selected: period.key },
                 data: { "auto-submit-form-target": "auto" },
-                class: "bg-container border border-secondary font-medium rounded-lg px-3 py-2 text-sm pr-7 cursor-pointer text-primary focus-visible:outline-2 focus-visible:outline-gray-900 focus-visible:outline-offset-2" %>
+                aria: { label: "Select cashflow time period" },
+                class: "bg-container border border-secondary font-medium rounded-lg px-3 py-2 text-sm pr-7 cursor-pointer text-primary min-w-[44px] min-h-[44px] focus-visible:outline-2 focus-visible:outline-gray-900 focus-visible:outline-offset-2" %>
     <% end %>
   </div>
 
@@ -20,7 +21,9 @@
         data-controller="sankey-chart"
         data-sankey-chart-data-value="<%= sankey_data.to_json %>"
         data-sankey-chart-currency-symbol-value="<%= sankey_data[:currency_symbol] %>"
-        class="w-full h-full"></div>
+        class="w-full h-full"
+        role="img"
+        aria-label="Cashflow sankey chart"></div>
     </div>
   <% else %>
     <div class="min-h-[300px] md:min-h-[340px] bg-container py-4 flex flex-col items-center justify-center">

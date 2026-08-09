@@ -1,4 +1,4 @@
-<div class="pb-12">
+<div class="pb-12 space-y-4">
   <%= render "budgets/budget_header",
             budget: @budget,
             previous_budget: @previous_budget,
@@ -6,8 +6,8 @@
             latest_budget: @latest_budget %>
 
   <div class="flex flex-col items-start gap-4 md:flex-row">
-    <div class="w-full md:max-w-[300px] space-y-4">
-      <div class="min-h-[300px] bg-container rounded-xl shadow-border-xs p-8">
+    <div class="w-full md:max-w-[320px] md:min-w-[320px] space-y-4">
+      <div class="h-[200px] md:h-[220px] bg-container rounded-xl shadow-border-xs p-4">
         <% if @budget.available_to_allocate.negative? %>
           <%= render "budgets/over_allocation_warning", budget: @budget %>
         <% else %>

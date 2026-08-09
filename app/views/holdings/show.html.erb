@@ -52,7 +52,7 @@
               <% @holding.trades.each_with_index do |trade_entry, index| %>
                 <li class="flex gap-4 text-sm space-y-1">
                   <div class="flex flex-col items-center gap-1.5 pt-2">
-                    <div class="rounded-full h-1.5 w-1.5 bg-gray-300"></div>
+                    <div class="rounded-full h-1.5 w-1.5 bg-alpha-black-300"></div>
                     <% unless index == @holding.trades.length - 1 %>
                       <div class="h-12 w-px bg-alpha-black-200"></div>
                     <% end %>
@@ -91,7 +91,7 @@
             <%= button_to t(".delete"),
                 holding_path(@holding),
                 method: :delete,
-                class: "rounded-lg px-3 py-2 text-destructive text-sm font-medium border border-secondary",
+                class: "rounded-lg px-3 py-2 text-destructive text-sm font-medium border border-secondary min-w-[44px] min-h-[44px] flex items-center justify-center",
                 data: { turbo_confirm: true } %>
           </div>
         </div>

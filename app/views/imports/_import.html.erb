@@ -10,7 +10,7 @@
     <% end %>
 
     <% if import.pending? %>
-      <span class="px-1 py text-xs rounded-full bg-gray-500/5 text-secondary border border-alpha-black-50">
+      <span class="px-1 py text-xs rounded-full bg-surface-inset text-secondary border border-alpha-black-50">
         <%= t(".in_progress") %>
       </span>
     <% elsif import.importing? %>

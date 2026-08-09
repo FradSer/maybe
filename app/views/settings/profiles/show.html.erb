@@ -64,7 +64,7 @@
       <% end %>
       <% if @pending_invitations.any? %>
         <% @pending_invitations.each do |invitation| %>
-          <div class="flex gap-2 items-center justify-between bg-container p-4 border border-alpha-black-25 rounded-lg">
+          <div class="flex gap-2 items-center justify-between bg-container p-4 border border-secondary rounded-lg">
             <div class="flex gap-2 items-center">
               <div class="w-9 h-9 shrink-0">
                 <div class="fg-inverse w-full h-full bg-surface-inset rounded-full flex items-center justify-center text-lg uppercase"><%= invitation.email[0] %></div>
@@ -85,7 +85,7 @@
                              readonly
                              autocomplete="off"
                              value="<%= accept_invitation_url(invitation.token) %>"
-                             class="text-sm bg-surface px-2 py-1 rounded border border-secondary w-72">
+                             class="text-sm bg-surface px-2 py-1 rounded border border-secondary w-full sm:w-72">
                   <button data-action="clipboard#copy" class="text-secondary hover:text-primary">
                     <span data-clipboard-target="iconDefault">
                       <%= icon "copy" %>

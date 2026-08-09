@@ -4,7 +4,7 @@
 
   <%# Check if first_account exists before creating link %>
   <% if first_account %>
-    <%= link_to first_account.name, account_path(first_account, tab: "activity"), class: "hover:underline", data: { turbo_frame: "_top" } %>
+    <%= link_to first_account.name, account_path(first_account, tab: "activity"), class: "hover:underline min-w-[44px] min-h-[44px] inline-flex items-center", data: { turbo_frame: "_top" }, aria: { label: "View #{first_account.name}" } %>
   <% else %>
     <span class="text-warning text-xs italic" title="Transfer ID: <%= transfer.id %>">
       Data Error: Missing account
@@ -16,7 +16,7 @@
 
   <%# Check if second_account exists before creating link %>
   <% if second_account %>
-    <%= link_to second_account.name, account_path(second_account, tab: "activity"), class: "hover:underline", data: { turbo_frame: "_top" } %>
+    <%= link_to second_account.name, account_path(second_account, tab: "activity"), class: "hover:underline min-w-[44px] min-h-[44px] inline-flex items-center", data: { turbo_frame: "_top" }, aria: { label: "View #{second_account.name}" } %>
   <% else %>
     <span class="text-warning text-xs italic" title="Transfer ID: <%= transfer.id %>">
       Data Error: Missing account

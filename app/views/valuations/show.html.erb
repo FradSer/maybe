@@ -66,7 +66,7 @@
           <%= button_to t(".delete"),
                 entry_path(entry),
                 method: :delete,
-                class: "rounded-lg px-3 py-2 text-destructive text-sm font-medium border border-secondary",
+                class: "rounded-lg px-3 py-2 text-destructive text-sm font-medium border border-secondary min-w-[44px] min-h-[44px] flex items-center justify-center",
                 data: { turbo_confirm: CustomConfirm.for_resource_deletion("value update").to_data_attribute, turbo_frame: "_top" } %>
         </div>
       </div>

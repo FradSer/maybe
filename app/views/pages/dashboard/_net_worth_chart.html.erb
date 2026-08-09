@@ -26,7 +26,8 @@
                     Period.as_options,
                     { selected: period.key },
                     data: { "auto-submit-form-target": "auto" },
-                    class: "bg-container border border-secondary font-medium rounded-lg px-3 py-2 text-sm pr-7 cursor-pointer text-primary focus-visible:outline-2 focus-visible:outline-gray-900 focus-visible:outline-offset-2" %>
+                    aria: { label: "Select time period" },
+                    class: "bg-container border border-secondary font-medium rounded-lg px-3 py-2 text-sm pr-7 cursor-pointer text-primary min-w-[44px] min-h-[44px] focus-visible:outline-2 focus-visible:outline-gray-900 focus-visible:outline-offset-2" %>
     <% end %>
   </div>
 
@@ -34,6 +35,8 @@
     <div
     id="netWorthChart"
     class="w-full flex-1 min-h-52"
+    role="img"
+    aria-label="Net worth chart"
     data-controller="time-series-chart"
     data-time-series-chart-data-value="<%= series.to_json %>"></div>
   <% else %>

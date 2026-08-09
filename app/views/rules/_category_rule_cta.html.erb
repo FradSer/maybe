@@ -6,7 +6,7 @@
 <%= render "shared/notifications/cta", message: message, description: description do %>
   <%= form_with model: Current.user, url: rule_prompt_settings_user_path(Current.user), method: :patch do |f| %>
     <div class="flex gap-2 items-center mb-3 -mt-1">
-      <%= f.check_box :rule_prompts_disabled, class: "checkbox checkbox--light" %>
+      <%= f.check_box :rule_prompts_disabled, class: "checkbox checkbox--light min-w-[44px] min-h-[44px]" %>
       <%= f.label :rule_prompts_disabled, "Don't show this again", class: "text-xs text-secondary" %>
     </div>
 

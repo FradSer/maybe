@@ -13,17 +13,18 @@
     <%= f.text_area :content, placeholder: "Ask a question about your finances...", value: message_hint,
                   class: "w-full border-0 text-sm resize-none px-1 bg-transparent focus-visible:outline-2 focus-visible:outline-gray-900 focus-visible:outline-offset-2 rounded-lg",
                   data: { chat_target: "input", action: "input->chat#autoResize keydown->chat#handleInputKeyDown" },
+                  aria: { label: "Ask a question about your finances" },
                   rows: 1 %>
 
     <div class="flex items-center justify-between gap-1">
       <div class="items-center gap-1 hidden lg:flex">
         <%# These are disabled for now, but in the future, will all open specific menus with their own context and search %>
         <% ["plus", "command", "at-sign", "mouse-pointer-click"].each do |icon| %>
-          <%= icon(icon, as_button: true, disabled: true, class: "cursor-not-allowed", title: "Coming soon") %>
+          <%= icon(icon, as_button: true, disabled: true, class: "cursor-not-allowed min-w-[44px] min-h-[44px]", title: "Coming soon") %>
         <% end %>
       </div>
 
-      <%= icon("arrow-up", as_button: true, type: "submit") %>
+      <%= icon("arrow-up", as_button: true, type: "submit", class: "min-w-[44px] min-h-[44px]") %>
     </div>
   <% end %>
 

@@ -1,4 +1,4 @@
-<%= link_to "Back to rules", rules_path %>
+<%= link_to "Back to rules", rules_path, class: "min-w-[44px] min-h-[44px] inline-flex items-center", aria: { label: "Back to rules" } %>
 
 <%= render DS::Dialog.new do |dialog| %>
   <% dialog.with_header(title: "New #{@rule.resource_type} rule") %>

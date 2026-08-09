@@ -28,7 +28,7 @@
     data-app-layout-left-sidebar-min-width-value="280"
     data-app-layout-right-sidebar-width-value="400"
     data-app-layout-right-sidebar-min-width-value="360"
-    data-app-layout-content-min-width-value="400"
+    data-app-layout-content-min-width-value="480"
     data-app-layout-user-id-value="<%= Current.user.id %>">
 
     <%# ======================= MOBILE ======================= %>
@@ -42,7 +42,7 @@
 
     <%# Slide-in account drawer (from the left, translateX animation) %>
     <aside
-      class="md:hidden app-layout__drawer fixed inset-y-0 left-0 z-40 w-80 max-w-[85%] bg-surface shadow-2xl"
+      class="md:hidden app-layout__drawer fixed inset-y-0 left-0 z-40 w-80 max-w-[85%] bg-surface shadow-lg"
       data-app-layout-target="mobileSidebar"
       aria-label="Account sidebar"
       aria-hidden="true">
@@ -144,10 +144,10 @@
     <% end %>
 
     <%# Main content (shrinks first, centered via justify-center on parent) %>
-    <%= tag.main class: class_names("grow overflow-y-auto px-3 md:px-10 py-4 w-full min-w-0"), data: { app_layout_target: "content" } do %>
+    <%= tag.main class: class_names("grow overflow-y-auto px-3 md:px-10 py-4 w-full min-w-[480px]"), data: { app_layout_target: "content" } do %>
       <div class="hidden md:flex gap-2 items-center justify-between mb-6">
         <div class="flex items-center gap-2">
-          <%= icon("panel-left", as_button: true, data: { action: "app-layout#toggleLeftSidebar" }) %>
+          <%= icon("panel-left", as_button: true, data: { action: "app-layout#toggleLeftSidebar" }, class: "focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:outline-none rounded-lg") %>
 
           <% if content_for?(:breadcrumbs) %>
             <%= yield :breadcrumbs %>
@@ -155,7 +155,7 @@
             <%= render "layouts/shared/breadcrumbs", breadcrumbs: @breadcrumbs %>
           <% end %>
         </div>
-        <%= icon("panel-right", as_button: true, data: { action: "app-layout#toggleRightSidebar" }) %>
+        <%= icon("panel-right", as_button: true, data: { action: "app-layout#toggleRightSidebar" }, class: "focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:outline-none rounded-lg") %>
       </div>
 
       <% if content_for?(:page_header) %>

@@ -26,8 +26,8 @@
                  readonly
                  autocomplete="off"
                  value="<%= Current.user.otp_secret %>"
-                 class="text-sm bg-container px-2 py-1 rounded border border-secondary w-96 font-mono">
-          <button data-action="clipboard#copy" class="text-secondary hover:text-gray-700">
+                 class="text-sm bg-container px-2 py-1 rounded border border-secondary w-full sm:w-96 font-mono">
+          <button data-action="clipboard#copy" class="text-secondary hover:text-primary">
             <span data-clipboard-target="iconDefault">
               <%= icon "copy" %>
             </span>

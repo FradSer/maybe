@@ -29,7 +29,7 @@ export default class extends Controller {
     leftSidebarMinWidth: { type: Number, default: 280 },
     rightSidebarWidth: { type: Number, default: 400 },
     rightSidebarMinWidth: { type: Number, default: 360 },
-    contentMinWidth: { type: Number, default: 400 },
+    contentMinWidth: { type: Number, default: 480 },
     userId: Number,
     leftOpen: { type: Boolean, default: true },
     rightOpen: { type: Boolean, default: true },
