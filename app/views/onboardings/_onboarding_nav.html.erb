@@ -10,6 +10,14 @@
 <%# Don't show last step if self hosted %>
 <% steps.pop if self_hosted? %>
 
+<% current_step = steps.find { |s| request.path == s[:path] } %>
+<% total_steps = steps.length %>
+
+<%# Mobile step indicator %>
+<p class="md:hidden text-sm text-secondary text-center">
+  Step <%= current_step ? current_step[:step_number] : 1 %> of <%= total_steps %>
+</p>
+
 <ul class="hidden md:flex items-center gap-2">
   <% steps.each_with_index do |step, idx| %>
     <li class="flex items-center gap-2 group">

@@ -13,6 +13,16 @@ class OnboardingsController < ApplicationController
   def trial
   end
 
+  # Bypass the current onboarding step. Invited users must still complete
+  # onboarding (their hidden onboarded_at field is normally set on submit),
+  # so mark them onboarded here instead of looping back to the wizard.
+  def skip
+    if @invitation && !Current.user.onboarded?
+      Current.user.update!(onboarded_at: Time.current)
+    end
+    redirect_to @invitation ? root_path : preferences_onboarding_path
+  end
+
   private
     def set_user
       @user = Current.user
