@@ -28,6 +28,11 @@ class TradesTest < ApplicationSystemTestCase
 
     click_button "Add transaction"
 
+    # The form submits via Turbo (async fetch). Wait for the modal to close,
+    # which only happens after the server has committed the trade and sent
+    # back the redirect stream, so the follow-up visit sees fresh data.
+    assert_no_selector "dialog[open]", wait: Capybara.default_max_wait_time
+
     visit_trades
 
     within_trades do
@@ -48,6 +53,8 @@ class TradesTest < ApplicationSystemTestCase
     fill_in "model[price]", with: 215.33
 
     click_button "Add transaction"
+
+    assert_no_selector "dialog[open]", wait: Capybara.default_max_wait_time
 
     visit_trades
 
