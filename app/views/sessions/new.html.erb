@@ -7,6 +7,11 @@
 
   <%= form.password_field :password, label: t(".password"), required: "required", placeholder: t(".password_placeholder") %>
 
+  <label class="flex items-center gap-2 text-sm text-primary cursor-pointer">
+    <%= form.check_box :remember_me, class: "checkbox checkbox--light" %>
+    <span>Remember me</span>
+  </label>
+
   <%= form.submit t(".submit") %>
 <% end %>
 
