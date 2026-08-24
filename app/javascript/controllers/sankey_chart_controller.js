@@ -12,13 +12,21 @@ export default class extends Controller {
   };
 
   connect() {
-    this.resizeObserver = new ResizeObserver(() => this.#draw());
+    this.resizeObserver = new ResizeObserver((entries) => {
+      const { width, height } = entries[entries.length - 1].contentRect;
+      if (Math.abs(width - (this._lastResizeWidth ?? 0)) < 2 && Math.abs(height - (this._lastResizeHeight ?? 0)) < 2) return;
+      this._lastResizeWidth = width;
+      this._lastResizeHeight = height;
+      cancelAnimationFrame(this._resizeFrame);
+      this._resizeFrame = requestAnimationFrame(() => this.#draw());
+    });
     this.resizeObserver.observe(this.element);
     this.#draw();
   }
 
   disconnect() {
     this.resizeObserver?.disconnect();
+    cancelAnimationFrame(this._resizeFrame);
   }
 
   #draw() {

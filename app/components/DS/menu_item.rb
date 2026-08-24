@@ -57,6 +57,6 @@ class DS::MenuItem < DesignSystemComponent
         data = data.merge(turbo_frame: frame)
       end
 
-      merged_opts.merge(data: data)
+      merged_opts.merge(role: "menuitem", data: data)
     end
 end

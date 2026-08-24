@@ -12,6 +12,11 @@ class DS::Tabs < DesignSystemComponent
   renders_many :panels, ->(tab_id:, &block) do
     content_tag(
       :div,
+      id: "#{tab_id}-panel",
+      role: "tabpanel",
+      tabindex: 0,
+      aria: { labelledby: "#{tab_id}-tab" },
+      hidden: tab_id != active_tab,
       class: ("hidden" unless tab_id == active_tab),
       data: { id: tab_id, DS__tabs_target: "panel" },
       &block
@@ -20,7 +25,7 @@ class DS::Tabs < DesignSystemComponent
 
   VARIANTS = {
     default: {
-      active_btn_classes: "bg-white theme-dark:bg-gray-700 text-primary shadow-sm",
+      active_btn_classes: "bg-container text-primary shadow-sm",
       inactive_btn_classes: "text-secondary hover:bg-surface-inset-hover",
       base_btn_classes: "w-full inline-flex justify-center items-center text-sm font-medium px-2 py-1 rounded-md transition-colors duration-200",
       nav_container_classes: "flex bg-surface-inset p-1 rounded-lg mb-4"

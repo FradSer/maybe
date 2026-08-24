@@ -18,7 +18,8 @@
           <div class="mb-4">
             <div class="flex items-center px-3 py-2 gap-2 border border-secondary rounded-lg focus-within:ring-secondary focus-within:border-secondary">
               <%= icon("search") %>
-              <input type="text"
+              <label for="chat-search" class="sr-only">Search chats</label>
+              <input id="chat-search" type="search"
                      placeholder="Search chats..."
                      class="form-field__input placeholder:text-sm placeholder:text-secondary w-full"
                      data-action="input->chat-search#filter"

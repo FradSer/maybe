@@ -86,7 +86,7 @@
                              autocomplete="off"
                              value="<%= accept_invitation_url(invitation.token) %>"
                              class="text-sm bg-surface px-2 py-1 rounded border border-secondary w-full sm:w-72">
-                  <button data-action="clipboard#copy" class="text-secondary hover:text-primary">
+                  <button type="button" data-action="clipboard#copy" class="text-secondary hover:text-primary min-w-[44px] min-h-[44px]" aria-label="Copy invitation link">
                     <span data-clipboard-target="iconDefault">
                       <%= icon "copy" %>
                     </span>

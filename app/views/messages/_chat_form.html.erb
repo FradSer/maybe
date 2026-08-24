@@ -20,13 +20,13 @@
       <div class="items-center gap-1 hidden lg:flex">
         <%# These are disabled for now, but in the future, will all open specific menus with their own context and search %>
         <% ["plus", "command", "at-sign", "mouse-pointer-click"].each do |icon| %>
-          <%= icon(icon, as_button: true, disabled: true, class: "cursor-not-allowed min-w-[44px] min-h-[44px]", title: "Coming soon") %>
+          <%= icon(icon, as_button: true, disabled: true, aria: { label: "Feature coming soon" }, class: "cursor-not-allowed min-w-[44px] min-h-[44px]", title: "Coming soon") %>
         <% end %>
       </div>
 
-      <%= icon("arrow-up", as_button: true, type: "submit", class: "min-w-[44px] min-h-[44px]") %>
+      <%= icon("arrow-up", as_button: true, type: "submit", aria: { label: "Send message" }, class: "min-w-[44px] min-h-[44px]") %>
     </div>
   <% end %>
 
-  <p class="text-xs text-secondary">AI responses are informational only and are not financial advice.</p>
+  <p class="text-xs text-gray-600 theme-dark:text-gray-400">AI responses are informational only and are not financial advice.</p>
 </div>

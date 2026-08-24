@@ -64,10 +64,12 @@ export default class extends Controller {
       10
     );
     this.#checkPanels();
+    this.element.addEventListener("keydown", this.#onMobileKeydown);
     window.addEventListener("resize", this.#onResize);
   }
 
   disconnect() {
+    this.element.removeEventListener("keydown", this.#onMobileKeydown);
     window.removeEventListener("resize", this.#onResize);
     if (this.#resizeTimer) cancelAnimationFrame(this.#resizeTimer);
   }
@@ -80,7 +82,9 @@ export default class extends Controller {
 
   openMobileSidebar() {
     this.mobileSidebarTarget.classList.add("app-layout__drawer--open");
+    this.mobileSidebarTarget.removeAttribute("inert");
     this.mobileSidebarTarget.setAttribute("aria-hidden", "false");
+    this.#setMobileTriggerExpanded(true);
     this.mobileBackdropTarget.classList.add("opacity-100");
     this.mobileBackdropTarget.classList.remove("opacity-0", "pointer-events-none");
     // Focus the close button inside the drawer
@@ -91,12 +95,46 @@ export default class extends Controller {
   closeMobileSidebar() {
     this.mobileSidebarTarget.classList.remove("app-layout__drawer--open");
     this.mobileSidebarTarget.setAttribute("aria-hidden", "true");
+    this.mobileSidebarTarget.setAttribute("inert", "");
+    this.#setMobileTriggerExpanded(false);
     this.mobileBackdropTarget.classList.add("opacity-0", "pointer-events-none");
     this.mobileBackdropTarget.classList.remove("opacity-100");
     // Return focus to the hamburger button
     const hamburger = this.element.querySelector('[data-action="app-layout#openMobileSidebar"]');
     if (hamburger) hamburger.focus();
   }
+
+  #setMobileTriggerExpanded(expanded) {
+    const trigger = this.element.querySelector('[data-action="app-layout#openMobileSidebar"]');
+    if (trigger) trigger.setAttribute("aria-expanded", String(expanded));
+  }
+
+  #onMobileKeydown = (event) => {
+    if (this.mobileSidebarTarget.getAttribute("aria-hidden") === "true") return;
+
+    if (event.key === "Escape") {
+      event.preventDefault();
+      this.closeMobileSidebar();
+      return;
+    }
+
+    if (event.key !== "Tab") return;
+
+    const focusable = this.mobileSidebarTarget.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
 
   // ── Desktop sidebar toggle (user-initiated) ─────────────────────────
 

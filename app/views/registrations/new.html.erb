@@ -26,7 +26,7 @@
 
 <%= styled_form_with model: @user, url: registration_path, class: "space-y-4" do |form| %>
   <%= form.email_field :email,
-      autofocus: false,
+      autofocus: true,
       autocomplete: "email",
       required: "required",
       placeholder: "you@example.com",

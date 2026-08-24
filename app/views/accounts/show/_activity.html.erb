@@ -77,6 +77,7 @@
           <div class="pl-0.5 col-span-8 flex items-center gap-4">
             <%= check_box_tag "selection_entry",
                               class: "checkbox checkbox--light",
+                              aria: { label: "Select all entries on this page" },
                               data: { action: "bulk-select#togglePageSelection" } %>
             <p><%= t(".date") %></p>
           </div>

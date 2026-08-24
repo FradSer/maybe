@@ -11,21 +11,25 @@ export default class extends Controller {
     const selectedTabId = btn.dataset.id;
 
     this.navBtnTargets.forEach((navBtn) => {
-      if (navBtn.dataset.id === selectedTabId) {
+      const isSelected = navBtn.dataset.id === selectedTabId;
+
+      if (isSelected) {
         navBtn.classList.add(...this.navBtnActiveClasses);
         navBtn.classList.remove(...this.navBtnInactiveClasses);
       } else {
         navBtn.classList.add(...this.navBtnInactiveClasses);
         navBtn.classList.remove(...this.navBtnActiveClasses);
       }
+
+      navBtn.setAttribute("aria-selected", isSelected);
+      navBtn.tabIndex = isSelected ? 0 : -1;
     });
 
     this.panelTargets.forEach((panel) => {
-      if (panel.dataset.id === selectedTabId) {
-        panel.classList.remove("hidden");
-      } else {
-        panel.classList.add("hidden");
-      }
+      const isSelected = panel.dataset.id === selectedTabId;
+
+      panel.classList.toggle("hidden", !isSelected);
+      panel.hidden = !isSelected;
     });
 
     if (this.urlParamKeyValue) {

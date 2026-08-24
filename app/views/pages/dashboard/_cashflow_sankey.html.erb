@@ -4,7 +4,7 @@
     <h2 class="text-lg font-medium inline-flex items-center gap-1.5">
       Cashflow
       <span data-controller="tooltip" class="inline-flex items-center">
-        <%= icon "info", size: "sm", class: "text-secondary cursor-help" %>
+        <%= icon "info", size: "sm", class: "text-secondary cursor-help", aria: { hidden: true } %>
         <span role="tooltip" data-tooltip-target="tooltip" class="tooltip bg-gray-700 text-sm p-2 rounded w-64">
           <span class="fg-inverse">
             Shows how money flows between your accounts over the selected period. Thicker lines mean more money moving between those accounts.
@@ -31,8 +31,23 @@
         data-sankey-chart-currency-symbol-value="<%= sankey_data[:currency_symbol] %>"
         class="w-full h-full"
         role="img"
-        aria-label="Cashflow sankey chart"></div>
+        aria-label="Cashflow sankey chart"
+        aria-describedby="cashflow-sankey-data"></div>
     </div>
+    <details id="cashflow-sankey-data" class="mx-4 mt-2 rounded-lg bg-surface-inset p-3">
+      <summary class="cursor-pointer text-sm font-medium text-primary">View cashflow data</summary>
+      <div class="mt-2 overflow-x-auto">
+        <table class="w-full text-sm">
+          <caption class="sr-only">Cashflow categories and amounts</caption>
+          <thead class="text-left text-secondary"><tr><th scope="col">Category</th><th scope="col" class="text-right">Amount</th><th scope="col" class="text-right">Share</th></tr></thead>
+          <tbody>
+            <% sankey_data[:nodes].each do |node| %>
+              <tr class="border-t border-tertiary"><th scope="row" class="py-1 text-left font-normal text-secondary"><%= node[:name] %></th><td class="py-1 text-right font-mono text-primary"><%= number_to_currency(node[:value], unit: sankey_data[:currency_symbol]) %></td><td class="py-1 text-right text-primary"><%= number_to_percentage(node[:percentage], precision: 1) %></td></tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </details>
   <% else %>
     <div class="min-h-[300px] md:min-h-[340px] bg-container py-4 flex flex-col items-center justify-center">
       <div class="space-y-3 text-center flex flex-col items-center">

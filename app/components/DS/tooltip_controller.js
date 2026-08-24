@@ -29,11 +29,17 @@ export default class extends Controller {
   addEventListeners() {
     this.element.addEventListener("mouseenter", this.show);
     this.element.addEventListener("mouseleave", this.hide);
+    this.element.addEventListener("focusin", this.show);
+    this.element.addEventListener("focusout", this.handleFocusout);
+    this.element.addEventListener("keydown", this.handleKeydown);
   }
 
   removeEventListeners() {
     this.element.removeEventListener("mouseenter", this.show);
     this.element.removeEventListener("mouseleave", this.hide);
+    this.element.removeEventListener("focusin", this.show);
+    this.element.removeEventListener("focusout", this.handleFocusout);
+    this.element.removeEventListener("keydown", this.handleKeydown);
   }
 
   show = () => {
@@ -45,6 +51,14 @@ export default class extends Controller {
   hide = () => {
     this.tooltipTarget.classList.add("hidden");
     this.stopAutoUpdate();
+  };
+
+  handleFocusout = (event) => {
+    if (!this.element.contains(event.relatedTarget)) this.hide();
+  };
+
+  handleKeydown = (event) => {
+    if (event.key === "Escape") this.hide();
   };
 
   startAutoUpdate() {

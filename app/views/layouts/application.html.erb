@@ -44,11 +44,13 @@
     <aside
       class="md:hidden app-layout__drawer fixed inset-y-0 left-0 z-40 w-80 max-w-[85%] bg-surface shadow-lg"
       data-app-layout-target="mobileSidebar"
+      id="mobile-account-drawer"
       aria-label="Account sidebar"
-      aria-hidden="true">
+      aria-hidden="true"
+      inert>
       <div class="h-full overflow-y-auto pt-[calc(env(safe-area-inset-top)+0.75rem)] pr-3 pb-[calc(env(safe-area-inset-bottom)+0.75rem)] pl-3">
         <div class="mb-2">
-          <%= icon("x", as_button: true, data: { action: "app-layout#closeMobileSidebar" }) %>
+          <%= icon("x", as_button: true, aria: { label: "Close navigation sidebar" }, data: { action: "app-layout#closeMobileSidebar" }) %>
         </div>
 
         <%= render(
@@ -62,10 +64,10 @@
 
     <%# Mobile top navigation %>
     <nav class="md:hidden flex justify-between items-center p-3" aria-label="Mobile top navigation">
-      <%= icon("panel-left", as_button: true, data: { action: "app-layout#openMobileSidebar"}) %>
+      <%= icon("panel-left", as_button: true, aria: { label: "Open navigation sidebar", expanded: false, controls: "mobile-account-drawer" }, data: { action: "app-layout#openMobileSidebar"}) %>
 
       <%= link_to root_path, class: "block" do %>
-        <%= image_tag "logomark-color.svg", class: "w-9 h-9 mx-auto" %>
+        <%= image_tag "logomark-color.svg", class: "w-9 h-9 mx-auto", alt: "Maybe" %>
       <% end %>
 
       <%= render "users/user_menu", user: Current.user, placement: "bottom-end", offset: 12 %>
@@ -99,6 +101,8 @@
           <%= render DS::Button.new(
             variant: "icon",
             icon: "message-circle-question",
+            aria: { label: "Open help" },
+            aria: { label: "Open help" },
             data: { action: "intercom#show" },
             class: "focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:outline-none"
           ) %>
@@ -150,10 +154,10 @@
     <% end %>
 
     <%# Main content (shrinks first, centered via justify-center on parent) %>
-    <%= tag.main class: class_names("grow overflow-y-auto px-3 sm:px-5 md:px-8 py-4 w-full min-w-[480px]"), style: "overscroll-behavior: contain", data: { app_layout_target: "content" } do %>
+    <%= tag.main class: class_names("grow min-w-0 overflow-y-auto px-3 sm:px-5 md:px-8 py-4 w-full"), style: "overscroll-behavior: contain", data: { app_layout_target: "content" } do %>
       <div class="hidden md:flex gap-2 items-center justify-between mb-6">
         <div class="flex items-center gap-2">
-          <%= icon("panel-left", as_button: true, data: { action: "app-layout#toggleLeftSidebar" }, class: "focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:outline-none rounded-lg") %>
+          <%= icon("panel-left", as_button: true, aria: { label: "Toggle navigation sidebar" }, data: { action: "app-layout#toggleLeftSidebar" }, class: "focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:outline-none rounded-lg") %>
 
           <% if content_for?(:breadcrumbs) %>
             <%= yield :breadcrumbs %>
@@ -161,7 +165,7 @@
             <%= render "layouts/shared/breadcrumbs", breadcrumbs: @breadcrumbs %>
           <% end %>
         </div>
-        <%= icon("panel-right", as_button: true, data: { action: "app-layout#toggleRightSidebar" }, class: "focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:outline-none rounded-lg") %>
+        <%= icon("panel-right", as_button: true, aria: { label: "Toggle AI assistant" }, data: { action: "app-layout#toggleRightSidebar" }, class: "focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:outline-none rounded-lg") %>
       </div>
 
       <% if content_for?(:page_header) %>

@@ -2,16 +2,16 @@
 
 <%= tag.div id: dom_id(plaid_item) do %>
   <details open class="group bg-container p-4 shadow-border-xs rounded-xl">
-    <summary class="flex items-center justify-between gap-2 focus-visible:outline-hidden">
+    <summary class="flex items-center justify-between gap-2 min-h-[44px] focus-visible:outline-2 focus-visible:outline-gray-900 focus-visible:outline-offset-2">
       <div class="flex items-center gap-2">
         <%= icon "chevron-right", class: "group-open:transform group-open:rotate-90" %>
 
-        <div class="flex items-center justify-center h-8 w-8 bg-blue-600/10 rounded-full">
+        <div class="flex items-center justify-center h-8 w-8 bg-blue-600/10 theme-dark:bg-blue-400/10 rounded-full">
           <% if plaid_item.logo.attached? %>
-            <%= image_tag plaid_item.logo, class: "rounded-full h-full w-full", loading: "lazy" %>
+            <%= image_tag plaid_item.logo, class: "rounded-full h-full w-full", loading: "lazy", alt: "#{plaid_item.name} logo" %>
           <% else %>
             <div class="flex items-center justify-center">
-              <%= tag.p plaid_item.name.first.upcase, class: "text-blue-600 text-xs font-medium" %>
+              <%= tag.p plaid_item.name.first.upcase, class: "text-blue-600 theme-dark:text-blue-400 text-xs font-medium" %>
             </div>
           <% end %>
         </div>
@@ -59,7 +59,8 @@
           <%= icon(
             "refresh-cw",
             as_button: true,
-            href: sync_plaid_item_path(plaid_item)
+            href: sync_plaid_item_path(plaid_item),
+            aria: { label: "Sync account connection" }
           ) %>
         <% end %>
 

@@ -9,8 +9,11 @@ class DS::Tabs::Nav < DesignSystemComponent
 
   renders_many :btns, ->(id:, label:, classes: nil, &block) do
     content_tag(
-      :button, label, id: id,
+      :button, label, id: "#{id}-tab",
       type: "button",
+      role: "tab",
+      aria: { selected: id == active_tab, controls: "#{id}-panel" },
+      tabindex: id == active_tab ? 0 : -1,
       class: class_names(btn_classes, id == active_tab ? active_btn_classes : inactive_btn_classes, classes),
       data: { id: id, action: "DS--tabs#show", DS__tabs_target: "navBtn" },
       &block

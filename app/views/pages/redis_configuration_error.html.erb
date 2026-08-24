@@ -5,19 +5,19 @@
     <div class="bg-container border border-primary rounded-xl p-6 sm:p-8 shadow-sm">
       <!-- Icon and Header -->
       <div class="text-center mb-8">
-        <div class="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-          <%= icon "alert-triangle", class: "w-8 h-8 text-red-600" %>
+        <div class="mx-auto w-16 h-16 bg-destructive/10 rounded-full flex items-center justify-center mb-4">
+          <%= icon "alert-triangle", color: "destructive", class: "w-8 h-8" %>
         </div>
         <h1 class="text-xl sm:text-2xl font-bold text-primary mb-2">Redis Configuration Required</h1>
-        <p class="text-sm sm:text-base text-muted">Your self-hosted Maybe installation needs Redis to be properly configured.</p>
+        <p class="text-sm sm:text-base text-secondary">Your self-hosted Maybe installation needs Redis to be properly configured.</p>
       </div>
 
       <!-- Explanation -->
       <div class="mb-8">
-        <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-6">
+        <div class="bg-warning/10 border border-warning/30 rounded-lg p-4 mb-6">
           <div class="flex items-start">
-            <%= icon "info", class: "w-5 h-5 text-amber-600 mt-0.5 mr-3 flex-shrink-0" %>
-            <div class="text-sm text-amber-800">
+            <%= icon "info", color: "warning", class: "w-5 h-5 mt-0.5 mr-3 flex-shrink-0" %>
+            <div class="text-sm text-primary">
               <p><strong>Why is Redis required?</strong></p>
               <p class="mt-1">Maybe uses Redis to power Sidekiq background jobs for tasks like syncing account data, processing imports, and other background operations that keep your financial data up to date.</p>
             </div>
@@ -36,14 +36,14 @@
             target: "_blank",
             rel: "noopener noreferrer"
           ) %>
-          <p class="text-sm text-muted">Follow our complete Docker setup guide to configure Redis</p>
+          <p class="text-sm text-secondary">Follow our complete Docker setup guide to configure Redis</p>
         </div>
       </div>
 
       <!-- Secondary CTA -->
       <div class="pt-6 border-t border-primary">
         <div class="text-center space-y-3">
-          <p class="text-sm text-muted">Once you've configured Redis, refresh this page to continue.</p>
+          <p class="text-sm text-secondary">Once you've configured Redis, refresh this page to continue.</p>
           <%= render DS::Button.new(
             text: "Refresh Page",
             variant: "secondary",

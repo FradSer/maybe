@@ -7,3 +7,7 @@ scopes:
       description: database schema, migrations, and seeds; does not cover data migration scripts in app/
     - name: lib
       description: utility libraries, custom rake tasks, and shared code outside app/ or config/
+    - name: bin
+      description: Executable scripts in bin/ for application setup and runtime; does not cover deployment configuration files.
+    - name: qa
+      description: Automated test coverage, fixtures, and test support in test/; does not cover production application behavior.

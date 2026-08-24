@@ -8,7 +8,8 @@
             size: "sm",
             href: sync_all_accounts_path,
             disabled: Current.family.syncing?,
-            frame: :_top
+            frame: :_top,
+            aria: { label: "Sync all accounts" }
           ) %>
       <%= render DS::Link.new(
         text: "New account",

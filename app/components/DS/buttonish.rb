@@ -5,7 +5,7 @@ class DS::Buttonish < DesignSystemComponent
       icon_classes: "fg-inverse"
     },
     secondary: {
-      container_classes: "text-primary bg-gray-50 theme-dark:bg-gray-700 hover:bg-gray-100 theme-dark:hover:bg-gray-600 disabled:bg-gray-200 theme-dark:disabled:bg-gray-600",
+      container_classes: "text-primary bg-surface theme-dark:bg-gray-700 hover:bg-surface-inset theme-dark:hover:bg-gray-600 disabled:bg-gray-200 theme-dark:disabled:bg-gray-600",
       icon_classes: "fg-primary"
     },
     destructive: {
@@ -17,15 +17,15 @@ class DS::Buttonish < DesignSystemComponent
       icon_classes: "fg-gray"
     },
     outline_destructive: {
-      container_classes: "text-destructive border border-secondary bg-transparent hover:bg-gray-100 theme-dark:hover:bg-gray-700",
+      container_classes: "text-destructive border border-secondary bg-transparent hover:bg-surface-inset theme-dark:hover:bg-gray-700",
       icon_classes: "fg-gray"
     },
     ghost: {
-      container_classes: "text-primary bg-transparent hover:bg-gray-100 theme-dark:hover:bg-gray-700",
+      container_classes: "text-primary bg-transparent hover:bg-surface-inset theme-dark:hover:bg-gray-700",
       icon_classes: "fg-gray"
     },
     icon: {
-      container_classes: "hover:bg-gray-100 theme-dark:hover:bg-gray-700",
+      container_classes: "hover:bg-surface-inset theme-dark:hover:bg-gray-700",
       icon_classes: "fg-gray"
     },
     icon_inverse: {

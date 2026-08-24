@@ -67,6 +67,8 @@ export default class extends Controller {
       .append("svg")
       .attr("viewBox", `0 0 ${this.#viewBoxSize} ${this.#viewBoxSize}`) // Square aspect ratio
       .attr("preserveAspectRatio", "xMidYMid meet")
+      .attr("role", "img")
+      .attr("aria-label", "Budget allocation chart")
       .attr("class", "w-full h-full");
 
     const pie = d3
@@ -136,13 +138,13 @@ export default class extends Controller {
       .attr("fill", function () {
         if (this.dataset.segmentId === segmentId) {
           if (this.dataset.segmentId === unusedSegmentId) {
-            return "var(--budget-unused-fill)";
+            return "var(--budget-unused-fill, var(--color-gray-200))";
           }
 
           return this.dataset.originalColor;
         }
 
-        return "var(--budget-unallocated-fill)";
+        return "var(--budget-unallocated-fill, var(--color-gray-50))";
       });
 
     this.defaultContentTarget.classList.add("hidden");

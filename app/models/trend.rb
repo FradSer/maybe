@@ -28,11 +28,11 @@ class Trend
   def color
     case direction
     when "up"
-      favorable_direction.down? ? red_hex : green_hex
+      favorable_direction.down? ? negative_hex : positive_hex
     when "down"
-      favorable_direction.down? ? green_hex : red_hex
+      favorable_direction.down? ? positive_hex : negative_hex
     else
-      gray_hex
+      flat_hex
     end
   end
 
@@ -80,15 +80,15 @@ class Trend
   end
 
   private
-    def red_hex
-      "var(--color-destructive)"
+    def positive_hex
+      "var(--color-trend-positive)"
     end
 
-    def green_hex
-      "var(--color-success)"
+    def negative_hex
+      "var(--color-trend-negative)"
     end
 
-    def gray_hex
-      "var(--color-gray)"
+    def flat_hex
+      "var(--color-trend-flat)"
     end
 end

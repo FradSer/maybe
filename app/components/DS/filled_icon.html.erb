@@ -3,6 +3,7 @@
   <% if icon %>
     <%= helpers.icon(icon, size: icon_size, color: "current") %>
   <% elsif text %>
-    <%= tag.span text.first, class: text_classes %>
+    <%# Decorative initial derived from an adjacent visible label; hidden from AT so lone letters aren't announced %>
+    <%= tag.span text.first, class: text_classes, "aria-hidden": "true" %>
   <% end %>
 <% end %>

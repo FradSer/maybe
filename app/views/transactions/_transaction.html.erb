@@ -11,6 +11,7 @@
             disabled: transaction.transfer.present?,
             class: "checkbox checkbox--light",
             title: transaction.transfer.present? ? "Transfer transactions cannot be bulk-edited. Edit them individually." : "",
+            aria: { label: "Select transaction on #{entry.date}" },
             data: {
               id: entry.id,
               "bulk-select-target": "row",
@@ -22,7 +23,8 @@
             <% if transaction.merchant&.logo_url.present? %>
               <%= image_tag transaction.merchant.logo_url,
                   class: "w-6 h-6 rounded-full",
-                  loading: "lazy" %>
+                  loading: "lazy",
+                  alt: "#{transaction.merchant.name} logo" %>
             <% else %>
               <%= render DS::FilledIcon.new(
                 variant: :text,

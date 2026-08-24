@@ -14,4 +14,8 @@ class DS::Tooltip < ApplicationComponent
   def tooltip_content
     content? ? content : @text
   end
+
+  def tooltip_id
+    @tooltip_id ||= "ds-tooltip-#{SecureRandom.hex(4)}"
+  end
 end

@@ -9,7 +9,9 @@
   <% if unstyled? %>
     <%= content %>
   <% else %>
-    <%= nav %>
+    <%= tag.div role: "tablist" do %>
+      <%= nav %>
+    <% end %>
 
     <% panels.each do |panel| %>
       <%= panel %>

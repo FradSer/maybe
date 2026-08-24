@@ -29,7 +29,7 @@
           <li>
             <%= button_to imports_path(import: { type: "TransactionImport" }), class: "flex items-center justify-between p-4 group cursor-pointer w-full", data: { turbo: false } do %>
               <div class="flex items-center gap-2">
-                <div class="bg-blue-600/10 rounded-md w-8 h-8 flex items-center justify-center">
+                <div class="bg-blue-600/10 theme-dark:bg-blue-400/10 rounded-md w-8 h-8 flex items-center justify-center">
                   <span class="text-link">
                     <%= icon("file-spreadsheet", color: "current") %>
                   </span>

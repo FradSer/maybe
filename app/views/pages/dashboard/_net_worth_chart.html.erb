@@ -42,8 +42,26 @@
     class="w-full flex-1 min-h-52"
     role="img"
     aria-label="Net worth chart"
+    aria-describedby="net-worth-chart-data"
     data-controller="time-series-chart"
     data-time-series-chart-data-value="<%= series.to_json %>"></div>
+
+    <details id="net-worth-chart-data" class="mx-4 mt-2 rounded-lg bg-surface-inset p-3">
+      <summary class="cursor-pointer text-sm font-medium text-primary">View net worth data</summary>
+      <div class="mt-2 overflow-x-auto">
+        <table class="w-full text-sm">
+          <caption class="sr-only">Net worth by date</caption>
+          <thead class="text-left text-gray-600 theme-dark:text-gray-400">
+            <tr><th scope="col" class="pr-4">Date</th><th scope="col" class="text-right">Net worth</th></tr>
+          </thead>
+          <tbody>
+            <% series.each do |value| %>
+              <tr class="border-t border-tertiary"><th scope="row" class="py-1 pr-4 text-left font-normal text-gray-600 theme-dark:text-gray-400"><%= value.date_formatted %></th><td class="py-1 text-right font-mono text-primary"><%= value.value.format %></td></tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </details>
   <% else %>
     <div class="w-full h-full flex items-center justify-center">
       <p class="text-secondary text-sm"><%= t(".data_not_available") %></p>

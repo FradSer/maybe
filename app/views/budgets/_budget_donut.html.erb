@@ -1,4 +1,4 @@
-<%= tag.div data: { controller: "donut-chart", donut_chart_segments_value: budget.to_donut_segments_json }, class: "relative h-full" do %>
+<%= tag.div data: { controller: "donut-chart", donut_chart_segments_value: budget.to_donut_segments_json }, class: "relative h-full", role: "group", aria: { label: "Budget allocation" } do %>
   <div data-donut-chart-target="chartContainer" class="absolute inset-0 pointer-events-none"></div>
 
   <div data-donut-chart-target="contentContainer" class="flex justify-center items-center h-full">

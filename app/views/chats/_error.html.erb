@@ -1,8 +1,8 @@
 <%# locals: (chat:) %>
 
-<div id="chat-error" class="px-3 py-2 bg-red-100 border border-red-500 rounded-lg">
+<div id="chat-error" class="px-3 py-2 bg-red-50 border border-red-200 rounded-lg theme-dark:bg-red-900/20 theme-dark:border-red-800">
   <% if chat.debug_mode? %>
-    <div class="overflow-x-auto text-xs p-4 bg-red-200 rounded-md mb-2">
+    <div class="overflow-x-auto text-xs p-4 bg-red-100 rounded-md mb-2 theme-dark:bg-red-900/40">
       <code><%= chat.error %></code>
     </div>
   <% end %>

@@ -63,6 +63,7 @@
           <div class="pl-0.5 col-span-8 flex items-center gap-4">
             <%= check_box_tag "selection_entry",
                               class: "checkbox checkbox--light",
+                              aria: { label: "Select all transactions on this page" },
                               data: { action: "bulk-select#togglePageSelection" } %>
             <p>transaction</p>
           </div>
@@ -75,6 +76,7 @@
           <div class="md:hidden text-xs uppercase font-medium text-secondary mb-2 px-2">
             <%= check_box_tag "selection_entry",
                               class: "checkbox checkbox--light mr-2",
+                              aria: { label: "Select all transactions on this page" },
                               data: { action: "bulk-select#togglePageSelection" } %>
             <span>TRANSACTION</span>
           </div>

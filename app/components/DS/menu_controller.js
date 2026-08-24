@@ -64,6 +64,8 @@ export default class extends Controller {
   toggle = () => {
     this.show = !this.show;
     this.contentTarget.classList.toggle("hidden", !this.show);
+    this.buttonTarget.setAttribute("aria-expanded", this.show);
+    this.contentTarget.setAttribute("aria-hidden", !this.show);
     if (this.show) {
       this.update();
       this.focusFirstElement();
@@ -73,6 +75,8 @@ export default class extends Controller {
   close() {
     this.show = false;
     this.contentTarget.classList.add("hidden");
+    this.buttonTarget.setAttribute("aria-expanded", "false");
+    this.contentTarget.setAttribute("aria-hidden", "true");
   }
 
   focusFirstElement() {

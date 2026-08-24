@@ -19,7 +19,10 @@ export default class extends Controller {
   connect() {
     this._cleanup = null;
     this.boundUpdate = this.update.bind(this);
-    this.startAutoUpdate();
+    this.tooltipTarget.id ||= `tooltip-${crypto.randomUUID()}`;
+    this.element.tabIndex ||= 0;
+    this.element.setAttribute("aria-label", this.element.getAttribute("aria-label") || "More information");
+    this.element.setAttribute("aria-describedby", this.tooltipTarget.id);
     this.addEventListeners();
   }
 
@@ -31,20 +34,36 @@ export default class extends Controller {
   addEventListeners() {
     this.element.addEventListener("mouseenter", this.show);
     this.element.addEventListener("mouseleave", this.hide);
+    this.element.addEventListener("focusin", this.show);
+    this.element.addEventListener("focusout", this.handleFocusout);
+    this.element.addEventListener("keydown", this.handleKeydown);
   }
 
   removeEventListeners() {
     this.element.removeEventListener("mouseenter", this.show);
     this.element.removeEventListener("mouseleave", this.hide);
+    this.element.removeEventListener("focusin", this.show);
+    this.element.removeEventListener("focusout", this.handleFocusout);
+    this.element.removeEventListener("keydown", this.handleKeydown);
   }
 
   show = () => {
     this.tooltipTarget.style.display = "block";
+    this.startAutoUpdate();
     this.update(); // Ensure immediate update when shown
   };
 
   hide = () => {
     this.tooltipTarget.style.display = "none";
+    this.stopAutoUpdate();
+  };
+
+  handleFocusout = (event) => {
+    if (!this.element.contains(event.relatedTarget)) this.hide();
+  };
+
+  handleKeydown = (event) => {
+    if (event.key === "Escape") this.hide();
   };
 
   startAutoUpdate() {

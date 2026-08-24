@@ -7,10 +7,10 @@
 }
 
 @utility fg-contrast {
-  @apply text-gray-400;
+  @apply text-gray-500;
 
   @variant theme-dark {
-    @apply text-gray-500;
+    @apply text-gray-400;
   }
 }
 
@@ -55,9 +55,9 @@
 }
 
 @utility fg-subdued {
-  @apply text-gray-400;
+  @apply text-gray-500;
 
   @variant theme-dark {
-    @apply text-gray-500;
+    @apply text-gray-400;
   }
 }

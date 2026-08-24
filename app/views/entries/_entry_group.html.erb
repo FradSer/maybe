@@ -6,6 +6,7 @@
         <%= check_box_tag "#{date}_entries_selection",
                           class: ["checkbox checkbox--light", "hidden": entries.size == 0],
                           id: "selection_entry_#{date}",
+                          aria: { label: "Select all entries for #{I18n.l(date, format: :long)}" },
                           data: { action: "bulk-select#toggleGroupSelection" } %>
 
       <p class="uppercase space-x-1.5">

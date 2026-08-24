@@ -28,6 +28,7 @@ export default class extends Controller {
   disconnect() {
     this._teardown();
     document.removeEventListener("turbo:load", this._reinstall);
+    cancelAnimationFrame(this._resizeFrame);
     this._resizeObserver?.disconnect();
   }
 
@@ -562,8 +563,13 @@ export default class extends Controller {
   }
 
   _setupResizeObserver() {
-    this._resizeObserver = new ResizeObserver(() => {
-      this._reinstall();
+    this._resizeObserver = new ResizeObserver((entries) => {
+      const { width, height } = entries[entries.length - 1].contentRect;
+      if (Math.abs(width - (this._lastResizeWidth ?? 0)) < 2 && Math.abs(height - (this._lastResizeHeight ?? 0)) < 2) return;
+      this._lastResizeWidth = width;
+      this._lastResizeHeight = height;
+      cancelAnimationFrame(this._resizeFrame);
+      this._resizeFrame = requestAnimationFrame(() => this._reinstall());
     });
     this._resizeObserver.observe(this.element);
   }

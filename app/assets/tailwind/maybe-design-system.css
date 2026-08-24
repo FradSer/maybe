@@ -249,10 +249,21 @@
 }
 
 @layer base {
+  /* Trend colors consumed via inline styles from Ruby (Trend#color), invisible to Tailwind's tree-shake.
+     Tuned for WCAG AA text contrast per theme, unlike the graphic-oriented success/destructive tokens. */
+  :root {
+    --color-trend-positive: var(--color-green-800);
+    --color-trend-negative: var(--color-red-700);
+    --color-trend-flat: var(--color-gray-500);
+  }
+
   [data-theme="dark"] { 
     --color-success: var(--color-green-500);
     --color-warning: var(--color-yellow-400);
     --color-destructive: var(--color-red-400);
+    --color-trend-flat: var(--color-gray-400);
+    --color-trend-positive: var(--color-green-500);
+    --color-trend-negative: var(--color-red-400);
     --color-shadow: --alpha(var(--color-white) / 8%);
 
     /* Dark mode overrides for colors used in Stimulus controllers with SVGs */
@@ -449,7 +460,8 @@
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+    transition-property: opacity, background-color, border-color, color, fill, stroke, text-decoration-color !important;
+    transition-duration: 150ms !important;
     scroll-behavior: auto !important;
   }
 }

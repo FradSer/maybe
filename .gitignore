@@ -106,3 +106,10 @@ scripts/
 .windsurfrules
 .cursor/rules/dev_workflow.mdc
 .cursor/rules/taskmaster.mdc
+
+# git-agent generated files (never track)
+.git-agent/graph.db
+*.db-shm
+*.db-wal
+*.db-journal
+.git-agent/config.local.yml
