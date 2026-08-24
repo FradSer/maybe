@@ -113,3 +113,6 @@ scripts/
 *.db-wal
 *.db-journal
 .git-agent/config.local.yml
+
+# Pi session exports (never track)
+pi-session-*.html
