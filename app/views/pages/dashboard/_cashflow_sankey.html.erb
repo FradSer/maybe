@@ -41,7 +41,7 @@
           <caption class="sr-only">Cashflow categories and amounts</caption>
           <thead class="text-left text-secondary"><tr><th scope="col">Category</th><th scope="col" class="text-right">Amount</th><th scope="col" class="text-right">Share</th></tr></thead>
           <tbody>
-            <% sankey_data[:nodes].each do |node| %>
+            <% sankey_data[:nodes].reject { |node| node[:name] == "Cash Flow" }.each do |node| %>
               <tr class="border-t border-tertiary"><th scope="row" class="py-1 text-left font-normal text-secondary"><%= node[:name] %></th><td class="py-1 text-right font-mono text-primary"><%= number_to_currency(node[:value], unit: sankey_data[:currency_symbol]) %></td><td class="py-1 text-right text-primary"><%= number_to_percentage(node[:percentage], precision: 1) %></td></tr>
             <% end %>
           </tbody>

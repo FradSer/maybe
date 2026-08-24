@@ -19,8 +19,13 @@
     <div class="flex items-center justify-between gap-1">
       <div class="items-center gap-1 hidden lg:flex">
         <%# These are disabled for now, but in the future, will all open specific menus with their own context and search %>
-        <% ["plus", "command", "at-sign", "mouse-pointer-click"].each do |icon| %>
-          <%= icon(icon, as_button: true, disabled: true, aria: { label: "Feature coming soon" }, class: "cursor-not-allowed min-w-[44px] min-h-[44px]", title: "Coming soon") %>
+        <% [
+          ["plus", "Add attachment"],
+          ["command", "Command palette"],
+          ["at-sign", "Mention account"],
+          ["mouse-pointer-click", "Select element"]
+        ].each do |icon_name, label| %>
+          <%= icon(icon_name, as_button: true, disabled: true, aria: { label: "#{label} (coming soon)" }, class: "cursor-not-allowed min-w-[44px] min-h-[44px]", title: "Coming soon") %>
         <% end %>
       </div>
 

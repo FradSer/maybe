@@ -19,9 +19,24 @@ export default class extends Controller {
   connect() {
     this._cleanup = null;
     this.boundUpdate = this.update.bind(this);
-    this.tooltipTarget.id ||= `tooltip-${crypto.randomUUID()}`;
-    this.element.tabIndex ||= 0;
-    this.element.setAttribute("aria-label", this.element.getAttribute("aria-label") || "More information");
+    if (!this.tooltipTarget.id) {
+      const randomSuffix =
+        typeof crypto !== "undefined" && crypto.randomUUID
+          ? crypto.randomUUID()
+          : Math.random().toString(36).slice(2, 10);
+      this.tooltipTarget.id = `tooltip-${randomSuffix}`;
+    }
+    if (!this.element.hasAttribute("tabindex")) {
+      this.element.tabIndex = 0;
+    }
+    const visibleText = Array.from(this.element.childNodes)
+      .filter((node) => node !== this.tooltipTarget)
+      .map((node) => node.textContent || "")
+      .join("")
+      .trim();
+    if (!this.element.hasAttribute("aria-label") && !visibleText) {
+      this.element.setAttribute("aria-label", "More information");
+    }
     this.element.setAttribute("aria-describedby", this.tooltipTarget.id);
     this.addEventListeners();
   }
