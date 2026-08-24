@@ -11,13 +11,13 @@ class TrendTest < ActiveSupport::TestCase
   test "up" do
     trend = Trend.new(current: 100, previous: 50)
     assert_equal "up", trend.direction
-    assert_equal "var(--color-success)", trend.color
+    assert_equal "var(--color-trend-positive)", trend.color
   end
 
   test "down" do
     trend = Trend.new(current: 50, previous: 100)
     assert_equal "down", trend.direction
-    assert_equal "var(--color-destructive)", trend.color
+    assert_equal "var(--color-trend-negative)", trend.color
   end
 
   test "flat" do
@@ -25,7 +25,12 @@ class TrendTest < ActiveSupport::TestCase
     trend2 = Trend.new(current: 100, previous: nil)
     assert_equal "flat", trend1.direction
     assert_equal "up", trend2.direction
-    assert_equal "var(--color-gray)", trend1.color
+    assert_equal "var(--color-trend-flat)", trend1.color
+  end
+
+  test "favorable downward movement is positive" do
+    trend = Trend.new(current: 50, previous: 100, favorable_direction: "down")
+    assert_equal "var(--color-trend-positive)", trend.color
   end
 
   test "infinitely up" do
